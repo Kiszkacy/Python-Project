@@ -19,11 +19,11 @@ class EntityHandler(metaclass=Singleton):
             layer.draw()
 
     @staticmethod
-    def on_update(delta_time, category: ObjectCategory) -> None:
+    def on_update(delta_time: float, category: ObjectCategory) -> None:
         EntityHandler.categorized[category.value].on_update(delta_time)
 
     @staticmethod
-    def initialize():
+    def initialize() -> None:
         for category in EntityHandler.categorized:
             category.initialize()
 

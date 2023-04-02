@@ -1,9 +1,10 @@
-from enum import Enum
+
+from enum import IntEnum, auto
 
 
-class ObjectCategory(Enum):
-    PLAYER = 0
-    ENEMIES = 1
-    PROJECTILES = 2
-    STATIC = 3
-    HUD = 4
+class ObjectCategory(IntEnum):
+    PLAYER      = 0
+    ENEMIES     = auto() # will fill automatically starting from 1, 2, 3, ...
+    PROJECTILES = auto()
+    STATIC      = auto()
+    HUD         = auto()

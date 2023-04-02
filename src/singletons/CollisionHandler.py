@@ -4,7 +4,6 @@ from src.singletons.Singleton import Singleton
 from src.singletons.EntityHandler import EntityHandler
 from src.interfaces.Collidable import Collidable
 
-
 class CollisionHandler(metaclass=Singleton):
 
     # TODO doing detection collision here or in objects? 

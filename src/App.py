@@ -4,6 +4,7 @@ from src.entities.PlayerShip import PlayerShip
 from src.singletons.EntityHandler import EntityHandler
 from src.singletons.InputHandler import InputHandler
 from src.auxilary.ObjectCategory import ObjectCategory
+from src.util.VectorMath import length
 
 #tmp
 from src.tempclasses.tempWall import TempWall
@@ -25,7 +26,8 @@ class App(arcade.Window):
 
 
     def setup(self) -> None:
-        self.playerShip = PlayerShip()
+        arcade.enable_timings(120) # TMP enable fps timings
+        self.playerShip = PlayerShip((self.width/2, self.height/2))
         EntityHandler.add(self.playerShip, ObjectCategory.PLAYER)
         # initializing is only necessary if we check for collisions before drawing anything
         EntityHandler.initialize()
@@ -36,6 +38,7 @@ class App(arcade.Window):
 
 
     def on_update(self, delta_time: float) -> None:
+        arcade.print_timings() # TMP print fps timings
         # can update in custom order
         for category in ObjectCategory:
             EntityHandler.on_update(delta_time, category) # update everything in that list
@@ -48,9 +51,14 @@ class App(arcade.Window):
         # draw sprites
         EntityHandler.draw()
         # draw temporary gui
-        arcade.draw_text(f"Cursor: {InputHandler.mouse[0]} {InputHandler.mouse[1]}", 0, 125, arcade.color.LIGHT_CYAN, font_size=25)
-        arcade.draw_text(f"Space: {InputHandler.key_pressed[arcade.key.SPACE]}", 0, 75, arcade.color.LIGHT_CYAN, font_size=25)
-        arcade.draw_text(f"Player angle: {self.playerShip.angle}", 0, 25, arcade.color.LIGHT_CYAN, font_size=25)
+        arcade.draw_text(f"FPS: {arcade.get_fps()}", 15, 225, arcade.color.LIGHT_CYAN, font_size=20)
+        arcade.draw_text(f"Cursor: {InputHandler.mouse[0]} {InputHandler.mouse[1]}", 15, 195, arcade.color.LIGHT_CYAN, font_size=20)
+        arcade.draw_text(f"Active weapon idx: {self.playerShip.weapon_idx}", 15, 165, arcade.color.LIGHT_CYAN, font_size=20)
+        arcade.draw_text(f"Space: {InputHandler.key_pressed[arcade.key.SPACE]}", 15, 135, arcade.color.LIGHT_CYAN, font_size=20)
+        arcade.draw_text(f"Player angle: {self.playerShip.angle}", 15, 105, arcade.color.LIGHT_CYAN, font_size=20)
+        arcade.draw_text(f"Player power: {self.playerShip.power}", 15, 75, arcade.color.LIGHT_CYAN, font_size=20)
+        arcade.draw_text(f"Player velocity: {self.playerShip.velocity}", 15, 45, arcade.color.LIGHT_CYAN, font_size=20)
+        arcade.draw_text(f"Player speed: {length(self.playerShip.velocity)}", 15, 15, arcade.color.LIGHT_CYAN, font_size=20)
 
     # ==== INPUT METHODS ====
     # TODO check if mouse button ids do not overlap with keyboard buttons
