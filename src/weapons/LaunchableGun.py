@@ -3,6 +3,7 @@ import arcade
 from src.entities.projectiles.Projectile import Projectile
 from src.interfaces.Launchable import Launchable
 from src.singletons.EntityHandler import EntityHandler
+from src.auxilary.ObjectCategory import ObjectCategory
 from src.weapons.Gun import Gun
 from copy import deepcopy
 import numpy as np
@@ -35,7 +36,7 @@ class LaunchableGun(Gun):
             instance: Launchable = deepcopy(self.launchable)
             # TODO report this instance to a proper singleton
             instance.launch(launch_pos, launch_angle, self.launch_speed)
-            EntityHandler.everything.append(instance) # TODO redo when entityHandler is done
+            EntityHandler.add(instance, ObjectCategory.PROJECTILES)
         # set cooldown
         self.cd = 1.0 / self.shots_per_sec
 

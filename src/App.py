@@ -3,6 +3,10 @@ import arcade
 from src.entities.PlayerShip import PlayerShip
 from src.singletons.EntityHandler import EntityHandler
 from src.singletons.InputHandler import InputHandler
+from src.auxilary.ObjectCategory import ObjectCategory
+
+#tmp
+from src.tempclasses.tempWall import TempWall
 
 # TODO NOTES | self.update_rate <=> fps ?
 # TODO NOTES | self.vsync
@@ -22,22 +26,27 @@ class App(arcade.Window):
 
     def setup(self) -> None:
         self.playerShip = PlayerShip()
-        EntityHandler.everything = arcade.SpriteList() # initialize main sprite list
-        EntityHandler.everything.append(self.playerShip)
+        EntityHandler.add(self.playerShip, ObjectCategory.PLAYER)
+        # initializing is only necessary if we check for collisions before drawing anything
+        EntityHandler.initialize()
         # TODO sprites loading class
+
+        wall = TempWall()  # temporary
+        wall.position = (600,500)  # temporary
 
 
     def on_update(self, delta_time: float) -> None:
-        EntityHandler.everything.on_update(delta_time) # update everything in that list
-        # TODO ^ some things should be updated sooner and some later thats why
-        # TODO separate singleton will be very useful for storing those sprites
+        # can update in custom order
+        for category in ObjectCategory:
+            EntityHandler.on_update(delta_time, category) # update everything in that list
+
         InputHandler.clean() # always run this last
 
 
     def on_draw(self) -> None:
         self.clear() # clean old
         # draw sprites
-        EntityHandler.everything.draw()
+        EntityHandler.draw()
         # draw temporary gui
         arcade.draw_text(f"Cursor: {InputHandler.mouse[0]} {InputHandler.mouse[1]}", 0, 125, arcade.color.LIGHT_CYAN, font_size=25)
         arcade.draw_text(f"Space: {InputHandler.key_pressed[arcade.key.SPACE]}", 0, 75, arcade.color.LIGHT_CYAN, font_size=25)
