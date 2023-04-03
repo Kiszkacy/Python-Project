@@ -29,21 +29,21 @@ class PlayerShip(Ship): # TODO
 
 
     def process_input(self, delta: float) -> None:
-        if InputHandler.key_pressed[arcade.key.SPACE]: # TODO switch to mouse
+        if InputHandler.key_binding_pressed("SHOOT"): # TODO switch to mouse
             self.fire()
-        if InputHandler.key_pressed[arcade.key.F]: # TODO switch to mouse
+        if InputHandler.key_binding_pressed("ALTFIRE"): # TODO switch to mouse
             self.altfire()
-        if InputHandler.key_pressed[arcade.key.W] or InputHandler.key_pressed[arcade.key.UP]:
+        if InputHandler.key_binding_pressed("FLY"):
             self.fly(delta)
-        if InputHandler.key_pressed[arcade.key.KEY_1]:
+        if InputHandler.key_binding_pressed("WEAPON0"):
             self.switch_weapon(0)
-        if InputHandler.key_pressed[arcade.key.KEY_2]:
+        if InputHandler.key_binding_pressed("WEAPON1"):
             self.switch_weapon(1)
-        if InputHandler.key_pressed[arcade.key.KEY_3]:
+        if InputHandler.key_binding_pressed("WEAPON2"):
             self.switch_weapon(2)
-        if InputHandler.key_pressed[arcade.key.KEY_4]:
+        if InputHandler.key_binding_pressed("WEAPON3"):
             self.switch_weapon(3)
-        if InputHandler.key_pressed[arcade.key.KEY_5]:
+        if InputHandler.key_binding_pressed("WEAPON4"):
             self.switch_weapon(4)
 
 

@@ -10,7 +10,7 @@ class Config(metaclass=Singleton):
     @staticmethod
     def load_config():
         with open("..\\resources\\configs\\KeyBindings.json", "r") as f:
-            configs : dict = json.load(f)
+            configs: dict = json.load(f)
 
         for name, value in configs.items():
             Config.Keybindings[name] = [getattr(arcade_keys, key) for key in value]

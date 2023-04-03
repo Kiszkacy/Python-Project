@@ -7,7 +7,7 @@ class ProjectileAura(Projectile):
 
     def __init__(self) -> None:
         Projectile.__init__(self, sprite_url="..\\resources\\sprites\\tmp_projectile3.png",
-                            belongs_to=[ObjectCategory.PROJECTILES], collides_with=[ObjectCategory.STATIC],
+                            belongs_to=ObjectCategory.PROJECTILES, collides_with=[ObjectCategory.STATIC],
                             acceleration=350.0,
                             lifetime=2.0)
 

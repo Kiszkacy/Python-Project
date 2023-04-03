@@ -29,6 +29,7 @@ class App(arcade.Window):
     def setup(self) -> None:
         arcade.enable_timings(120) # TMP enable fps timings
         Config.load_config()
+        # InputHandler.init() # should be called after loading config
         self.playerShip = PlayerShip((self.width/2, self.height/2))
         EntityHandler.add(self.playerShip, ObjectCategory.PLAYER)
         # initializing is only necessary if we check for collisions before drawing anything
@@ -56,7 +57,7 @@ class App(arcade.Window):
         arcade.draw_text(f"FPS: {arcade.get_fps()}", 15, 225, arcade.color.LIGHT_CYAN, font_size=20)
         arcade.draw_text(f"Cursor: {InputHandler.mouse[0]} {InputHandler.mouse[1]}", 15, 195, arcade.color.LIGHT_CYAN, font_size=20)
         arcade.draw_text(f"Active weapon idx: {self.playerShip.weapon_idx}", 15, 165, arcade.color.LIGHT_CYAN, font_size=20)
-        arcade.draw_text(f"Space: {InputHandler.key_pressed[arcade.key.SPACE]}", 15, 135, arcade.color.LIGHT_CYAN, font_size=20)
+        arcade.draw_text(f"Space: {InputHandler.key_pressed.get(arcade.key.SPACE, False)}", 15, 135, arcade.color.LIGHT_CYAN, font_size=20)
         arcade.draw_text(f"Player angle: {self.playerShip.angle}", 15, 105, arcade.color.LIGHT_CYAN, font_size=20)
         arcade.draw_text(f"Player power: {self.playerShip.power}", 15, 75, arcade.color.LIGHT_CYAN, font_size=20)
         arcade.draw_text(f"Player velocity: {self.playerShip.velocity}", 15, 45, arcade.color.LIGHT_CYAN, font_size=20)
