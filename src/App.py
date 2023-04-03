@@ -5,6 +5,7 @@ from src.singletons.EntityHandler import EntityHandler
 from src.singletons.InputHandler import InputHandler
 from src.auxilary.ObjectCategory import ObjectCategory
 from src.util.VectorMath import length
+from src.singletons.Config import Config
 
 #tmp
 from src.tempclasses.tempWall import TempWall
@@ -27,6 +28,7 @@ class App(arcade.Window):
 
     def setup(self) -> None:
         arcade.enable_timings(120) # TMP enable fps timings
+        Config.load_config()
         self.playerShip = PlayerShip((self.width/2, self.height/2))
         EntityHandler.add(self.playerShip, ObjectCategory.PLAYER)
         # initializing is only necessary if we check for collisions before drawing anything

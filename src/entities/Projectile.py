@@ -15,7 +15,7 @@ from src.util.VectorMath import normalize, length
 
 class Projectile(Entity, Launchable, Collidable, Destroyable):
 
-    def __init__(self, sprite_url: str, belongs_to: list[ObjectCategory], collides_with: list[ObjectCategory],
+    def __init__(self, sprite_url: str, belongs_to: ObjectCategory, collides_with: list[ObjectCategory],
                  damage: float = 10, acceleration: float = 0.0, lifetime: float = 2.0,
                  falloff_damage: list[Tuple[float, float]] = None, penetrations: int = 1, bounces: int = 0,
                  movement_type: MovementType = None) -> None:

@@ -8,6 +8,7 @@ from src.weapons.basic.WeaponBasic import WeaponBasic
 from src.weapons.shotgun.WeaponShotgun import WeaponShotgun
 from src.weapons.sinus.WeaponSinus import WeaponSinus
 from src.weapons.weird.WeaponWeird import WeaponWeird
+from src.auxilary.ObjectCategory import ObjectCategory
 
 
 class PlayerShip(Ship): # TODO
@@ -15,7 +16,9 @@ class PlayerShip(Ship): # TODO
     def __init__(self, starting_position: arcade.Point) -> None:
         super().__init__(sprite_url="..\\resources\\sprites\\tmp_ship0.png",
                          weapons=[WeaponBasic(), WeaponShotgun(), WeaponAura(), WeaponSinus(), WeaponWeird()],
-                         weapon_count=5)
+                         weapon_count=5,
+                         belongs_to=ObjectCategory.PLAYER,
+                         collides_with=[ObjectCategory.STATIC, ObjectCategory.ENEMIES, ObjectCategory.PROJECTILES])
         self.position = starting_position
 
 
