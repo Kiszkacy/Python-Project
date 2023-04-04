@@ -1,5 +1,7 @@
 
 import arcade
+
+from src.entities.Entity import Entity
 from src.entities.Projectile import Projectile
 from src.interfaces.Launchable import Launchable
 from src.singletons.EntityHandler import EntityHandler
@@ -45,9 +47,9 @@ class LaunchableGun(Gun):
     def launch(self, from_: arcade.Point, angle: float, pos_offset: arcade.Vector, idx: int) -> None:
         launch_angle: float = angle + np.random.uniform(-0.5, 0.5) * self.launch_spread + self.spread_angles[idx]
         launch_pos: arcade.Vector = (from_[0] + pos_offset[0] * self.barrels[idx][0], from_[1] + pos_offset[1] * self.barrels[idx][1])
-        instance: Launchable = deepcopy(self.launchable)
+        instance: Launchable and Entity = deepcopy(self.launchable)
         instance.launch(launch_pos, launch_angle, self.launch_speed)
-        EntityHandler.add(instance, ObjectCategory.PROJECTILES)
+        EntityHandler.add(instance, instance.belongs_to)
 
 
 if __name__ == '__main__':

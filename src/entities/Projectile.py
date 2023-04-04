@@ -7,6 +7,7 @@ from src.auxilary.MovementType import MovementType
 from src.auxilary.ObjectCategory import ObjectCategory
 from src.entities.Entity import Entity
 from src.interfaces.Collidable import Collidable
+from src.interfaces.Damageable import Damageable
 from src.interfaces.Destroyable import Destroyable
 from src.interfaces.Launchable import Launchable
 from src.singletons.CollisionHandler import CollisionHandler
@@ -45,9 +46,15 @@ class Projectile(Entity, Launchable, Collidable, Destroyable):
         self.movement_type.move(delta_time, self)
         # check collisions
         # TODO temporary setup
-        # TODO add damage dealt at collision detection
         hit_list = CollisionHandler.check_collision(self)
-        if hit_list: self.destroy()
+        if hit_list:
+            for obj in hit_list:
+                self.penetrations -= 1
+                if isinstance(obj, Damageable):
+                    obj.damage(self.damage)
+                if self.penetrations == 0:
+                    self.destroy()
+                    break
 
 
     def launch(self, from_: arcade.Point, angle: float, speed: float) -> None:

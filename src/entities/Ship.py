@@ -4,6 +4,8 @@ import numpy as np
 from src.auxilary.LinearMovement import LinearMovement
 from src.auxilary.MovementType import MovementType
 from src.entities.Entity import Entity
+from src.interfaces.Damageable import Damageable
+from src.interfaces.Destroyable import Destroyable
 from src.util.VectorMath import normalize, length
 from src.weapons.LaunchableGun import LaunchableGun
 from src.weapons.Weapon import Weapon
@@ -13,7 +15,7 @@ from src.auxilary.ObjectCategory import ObjectCategory
 
 
 
-class Ship(Entity, Collidable):
+class Ship(Entity, Collidable, Damageable, Destroyable):
     # TODO move this to config file
     POWER_TICKS_PER_SECOND: int = 4
     POWER_REGEN_COOLDOWN: float = 1.0 / POWER_TICKS_PER_SECOND
@@ -22,9 +24,11 @@ class Ship(Entity, Collidable):
                  rotation_speed: float = 300.0, max_speed: float = 550.0,
                  acceleration: float = 750.0, deceleration: float = 50.0, weapons: list[Weapon] = None,
                  weapon_count: int = 1, power_max: float = 100.0, power_regen_amount: float = 25.0,
-                 power_regen_delay: float = 2.5,  movement_type: MovementType = None) -> None:
+                 power_regen_delay: float = 2.5, movement_type: MovementType = None,
+                 max_hp: float = 100.0, max_shd: float = 25.0) -> None:
         Entity.__init__(self, sprite_url=sprite_url)
         Collidable.__init__(self, belongs_to, collides_with)
+        Damageable.__init__(self, max_hp, max_shd)
         self.rotation_speed: float = rotation_speed
         self.max_speed: float = max_speed
         self.acceleration: float = acceleration
@@ -131,6 +135,18 @@ class Ship(Entity, Collidable):
 
                     # Subtract the projection from the original velocity vector to stop the ship's movement in the stop_direction
                     self.velocity -= velocity_projection - force*25  # TODO remove the constant
+
+
+    def damage(self, amount: float) -> float:
+        dealt: float = super(Ship, self).damage(amount)
+        if self.hp <= 0.0:
+            self.destroy()
+        return dealt
+
+
+    def destroy(self) -> Destroyable:
+        self.kill()
+        return self
 
 
 if __name__ == '__main__':

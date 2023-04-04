@@ -7,7 +7,7 @@ from src.auxilary.ObjectCategory import ObjectCategory
 class EntityHandler(metaclass=Singleton):
 
     # TODO decide which category should use spatial hashes
-    categorized: list[arcade.SpriteList] = [arcade.SpriteList() for _ in ObjectCategory]
+    categorized: list[arcade.SpriteList] = [arcade.SpriteList(use_spatial_hash=True) for _ in ObjectCategory]
 
     @staticmethod
     def add(sprite: arcade.Sprite, category: ObjectCategory) -> None:
