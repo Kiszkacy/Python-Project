@@ -14,9 +14,13 @@ class EntityHandler(metaclass=Singleton):
         EntityHandler.categorized[category.value].append(sprite)
 
     @staticmethod
-    def draw() -> None:
+    def draw_all() -> None:
         for layer in EntityHandler.categorized:
             layer.draw()
+
+    @staticmethod
+    def draw(category: ObjectCategory) -> None:
+        EntityHandler.categorized[category].draw()
 
     @staticmethod
     def on_update(delta_time: float, category: ObjectCategory) -> None:

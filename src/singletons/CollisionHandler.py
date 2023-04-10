@@ -27,7 +27,7 @@ class CollisionHandler(metaclass=Singleton):
         len1, len2 = len(hit_box1), len(hit_box2)
         intersection_points = []
 
-        # finding intersection points between each pair of segments  belonging two hitbox1 and hitbox2
+        # finding intersection points between each pair of segments belonging two hitbox1 and hitbox2
         for i in range(len(hit_box1)):
             i1, i2 = i, (i+1) % len1
             for j in range(len(hit_box2)):

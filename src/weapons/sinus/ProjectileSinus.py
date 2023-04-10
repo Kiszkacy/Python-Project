@@ -7,7 +7,8 @@ class ProjectileSinus(Projectile):
 
     def __init__(self) -> None:
         Projectile.__init__(self, sprite_url="..\\resources\\sprites\\tmp_projectile0.png",
-                            belongs_to=ObjectCategory.PROJECTILES, collides_with=[ObjectCategory.STATIC, ObjectCategory.ENEMIES],
+                            belongs_to=ObjectCategory.PROJECTILES,
+                            collides_with=[ObjectCategory.STATIC, ObjectCategory.ENEMIES, ObjectCategory.MISC],
                             movement_type=SinusoidalMovement(16.0, 96.0, 800.0))
 
 

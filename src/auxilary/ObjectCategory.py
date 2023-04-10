@@ -8,3 +8,4 @@ class ObjectCategory(IntEnum):
     PROJECTILES = auto()
     STATIC      = auto()
     HUD         = auto()
+    MISC        = auto()

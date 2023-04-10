@@ -18,7 +18,7 @@ class LaunchableGun(Gun):
                  launch_spread: float = 0.0, shot_spread: float = 5.0, even_spread: float = 0.0, custom_spread: list[float] = None,
                  shots_per_sec: float = 5.0,
                  launchable: Launchable = Projectile("..\\resources\\sprites\\tmp_projectile0.png",
-                                                     [ObjectCategory.PROJECTILES], [ObjectCategory.ENEMIES])) -> None:
+                                                     ObjectCategory.PROJECTILES, [ObjectCategory.ENEMIES])) -> None:
         # TODO change path to error texture
         super().__init__(power_cost, barrel_count, barrels, barrels_even_offset)
         # launchableGun stats

@@ -6,5 +6,7 @@
     "WEAPON2": ["KEY_3"],
     "WEAPON3": ["KEY_4"],
     "WEAPON4": ["KEY_5"],
-    "FLY": ["W", "UP"]
+    "FLY": ["W", "UP"],
+    "CONSOLE": ["BRACKETRIGHT"],
+    "DEBUG_PRINT": ["BRACKETLEFT"]
 }

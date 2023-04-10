@@ -1,7 +1,9 @@
 
 import arcade
 import numpy as np
+from src.auxilary.InputMode import InputMode
 from src.entities.Ship import Ship
+from src.singletons.Config import Config
 from src.singletons.InputHandler import InputHandler
 from src.weapons.aura.WeaponAura import WeaponAura
 from src.weapons.basic.WeaponBasic import WeaponBasic
@@ -18,7 +20,7 @@ class PlayerShip(Ship): # TODO
                          weapons=[WeaponBasic(), WeaponShotgun(), WeaponAura(), WeaponSinus(), WeaponWeird()],
                          weapon_count=5,
                          belongs_to=ObjectCategory.PLAYER,
-                         collides_with=[ObjectCategory.STATIC, ObjectCategory.ENEMIES, ObjectCategory.PROJECTILES])
+                         collides_with=[ObjectCategory.STATIC, ObjectCategory.ENEMIES, ObjectCategory.PROJECTILES, ObjectCategory.MISC])
         self.position = starting_position
 
 
@@ -29,11 +31,13 @@ class PlayerShip(Ship): # TODO
 
 
     def process_input(self, delta: float) -> None:
-        if InputHandler.key_binding_pressed("SHOOT"): # TODO switch to mouse
+        if InputHandler.mode is not InputMode.INGAME: return
+
+        if InputHandler.key_binding_held("SHOOT"): # TODO switch to mouse
             self.fire()
-        if InputHandler.key_binding_pressed("ALTFIRE"): # TODO switch to mouse
+        if InputHandler.key_binding_held("ALTFIRE"): # TODO switch to mouse
             self.altfire()
-        if InputHandler.key_binding_pressed("FLY"):
+        if InputHandler.key_binding_held("FLY"):
             self.fly(delta)
         if InputHandler.key_binding_pressed("WEAPON0"):
             self.switch_weapon(0)
@@ -47,36 +51,13 @@ class PlayerShip(Ship): # TODO
             self.switch_weapon(4)
 
 
-    def rotate_towards_mouse(self, delta: float) -> None: # TODO add interpolation when Ship is ready
+    def rotate_towards_mouse(self, delta: float) -> None:
         mouse: arcade.Point = InputHandler.mouse
 
-        x_diff: float = mouse[0] - self.position[0]
-        y_diff: float = mouse[1] - self.position[1]
+        x_diff: float = mouse[0] - Config.Settings.get("SCREEN_WIDTH") / 2.0 # TODO may create weird behavior when player is moving at high speeds
+        y_diff: float = mouse[1] - Config.Settings.get("SCREEN_HEIGHT") / 2.0
         target_angle_rad: float = np.arctan2(y_diff, x_diff)
-        if target_angle_rad < 0.0: target_angle_rad += 2 * np.pi
-        # how to rotate calculations
-        angle_rad: float = np.deg2rad(self.angle)
-        rotation_rad: float = np.deg2rad(self.rotation_speed)
-        angle_rad_diff: float = target_angle_rad - angle_rad
-        # rotation clockwise or anticlockwise?
-        clockwise: bool = False
-        if abs(angle_rad_diff) <= rotation_rad * delta:
-            # jump to target angle if small
-            angle_rad = target_angle_rad
-        elif angle_rad_diff > 0 and abs(angle_rad_diff) >= np.pi:
-            clockwise = True
-        elif angle_rad_diff < 0 and abs(angle_rad_diff) < np.pi:
-            clockwise = True
-
-        if angle_rad != target_angle_rad and clockwise:
-            angle_rad -= rotation_rad * delta
-        elif angle_rad != target_angle_rad:
-            angle_rad += rotation_rad * delta
-
-        if angle_rad > 2 * np.pi:   angle_rad -= 2 * np.pi
-        elif angle_rad < 0:         angle_rad += 2 * np.pi
-
-        self.angle = np.degrees(angle_rad)
+        self.rotate_towards(delta, target_angle_rad)
 
 
 if __name__ == '__main__':
