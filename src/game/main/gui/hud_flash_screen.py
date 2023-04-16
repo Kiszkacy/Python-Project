@@ -37,16 +37,24 @@ class HUDFlashScreen(Processable):
         EntityHandler.add(screen, ObjectCategory.HUD)
         return screen
 
+    def reset_screens(self) -> None:
+        self.shield_break.color = (0, 0, 0, 0)
+        self.damage_shield.color = (0, 0, 0, 0)
+        self.damage_hull.color = (0, 0, 0, 0)
+
     def process(self, delta: float) -> None:
         if self.player_ship.shd < self.previous_shd and self.player_ship.shd > 0.0:
+            self.reset_screens() # reset old effects
             self.active_flash = self.damage_shield
             self.flash_timer = 0.8 # TODO constant
             self.previous_shd = self.player_ship.shd
         elif self.player_ship.shd < self.previous_shd: # shd <= 0.0
+            self.reset_screens()  # reset old effects
             self.active_flash = self.shield_break
             self.flash_timer = 1.4 # TODO constant
             self.previous_shd = self.player_ship.shd
         elif self.player_ship.hp < self.previous_hp:
+            self.reset_screens()  # reset old effects
             self.active_flash = self.damage_hull
             self.flash_timer = 0.8 # TODO constant
             self.previous_hp = self.player_ship.hp

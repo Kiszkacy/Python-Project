@@ -3,6 +3,8 @@ from typing import Tuple
 import arcade
 
 from src.game.main.background_drawer import BackgroundDrawer
+from src.game.main.behaviors.finite_state_machine import FiniteStateMachine
+from src.game.main.entities.enemies.enemy_ship import EnemyShip
 from src.game.main.entities.player_ship import PlayerShip
 from src.game.main.enums.input_mode import InputMode
 from src.game.main.enums.object_category import ObjectCategory
@@ -13,7 +15,9 @@ from src.game.main.singletons.debug.debug_critical import DebugCritical
 from src.game.main.singletons.entity_handler import EntityHandler
 from src.game.main.singletons.input_handler import InputHandler
 #tmp
-from src.game.main.tempclasses.tempWall import TempWall
+from src.game.main.tempclasses.attacking_state import AttackingState
+from src.game.main.tempclasses.calm_state import CalmState
+from src.game.main.tempclasses.temp_wall import TempWall
 
 
 class App(arcade.Window):
@@ -41,11 +45,17 @@ class App(arcade.Window):
         Console.init()
         DebugCritical.init()
         arcade.enable_timings(120) # TMP enable fps timings
-        # InputHandler.init() # should be called after loading config
+        # player ship
         self.player_ship = PlayerShip((self.width/2, self.height/2))
         EntityHandler.add(self.player_ship, ObjectCategory.PLAYER)
-        # initializing is only necessary if we check for collisions before drawing anything
-        EntityHandler.initialize()
+        ###################################
+        for i in range(2):
+            enemy1 = EnemyShip((i*100, 300))
+            EntityHandler.add(enemy1, ObjectCategory.ENEMIES)
+            calm = CalmState(enemy1)
+            behavior1 = FiniteStateMachine(calm, [AttackingState(enemy1, calm, self.player_ship, self.player_ship)], resumable=True)
+            enemy1.add_behavior(behavior1)
+        ###################################
         # hud init
         self.hud = HUD(self.player_ship)
         self.hud.init()
@@ -55,10 +65,13 @@ class App(arcade.Window):
         # TODO sprites loading class
         wall = TempWall()  # temporary
         wall.position = (600,500)  # temporary
+        # initializing is only necessary if we check for collisions before drawing anything
+        EntityHandler.initialize()
+        EntityHandler.update_barrier_list()
 
 
     def on_update(self, delta_time: float) -> None:
-        arcade.print_timings() # TMP print fps timings
+        # arcade.print_timings() # TMP print fps timings
         # can update in custom order
         for category in ObjectCategory:
             EntityHandler.on_update(delta_time, category) # update everything in that list

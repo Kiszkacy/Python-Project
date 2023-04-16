@@ -1,7 +1,7 @@
+import math
 
 import arcade
 import numpy as np
-
 
 EPSILON: float = 10 ** -12
 
@@ -82,6 +82,10 @@ def intersects_lines(line1, line2) -> np.ndarray | None:
                     (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4))
         return np.array((intersection_x, intersection_y))
     return None
+
+
+def distance2D(vec1: arcade.Vector, vec2: arcade.Vector) -> float:
+    return math.sqrt((vec1[0] - vec2[0]) ** 2 + (vec1[1] - vec2[1]) ** 2)
 
 
 if __name__ == '__main__':

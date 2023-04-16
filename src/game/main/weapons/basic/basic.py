@@ -1,6 +1,6 @@
 
 from src.game.main.entities.projectile import Projectile
-from src.game.main.tempclasses.tempEnemy import TempEnemy
+from src.game.main.tempclasses.temp_enemy import TempEnemy
 from src.game.main.util.path_loader import get_absolute_resource_path
 from src.game.main.weapons.launchable_gun import LaunchableGun
 from src.game.main.weapons.weapon import Weapon

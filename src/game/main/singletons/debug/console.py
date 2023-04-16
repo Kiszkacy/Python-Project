@@ -5,8 +5,10 @@ import numpy as np
 from arcade import load_texture
 from arcade.gui import UIManager, UITexturePane, UIInputText, UIBoxLayout, UITextArea
 
+from src.game.main.behaviors.finite_state_machine import FiniteStateMachine
 from src.game.main.entities.asteroids.asteroidMedium import AsteroidMedium
 from src.game.main.entities.asteroids.asteroidSmall import AsteroidSmall
+from src.game.main.entities.enemies.enemy_ship import EnemyShip
 from src.game.main.entities.player_ship import PlayerShip
 from src.game.main.enums.input_mode import InputMode
 from src.game.main.enums.object_category import ObjectCategory
@@ -14,6 +16,8 @@ from src.game.main.singletons.config import Config
 from src.game.main.singletons.entity_handler import EntityHandler
 from src.game.main.singletons.input_handler import InputHandler
 from src.game.main.singletons.singleton import Singleton
+from src.game.main.tempclasses.attacking_state import AttackingState
+from src.game.main.tempclasses.calm_state import CalmState
 from src.game.main.util.math import magnitude
 from src.game.main.util.path_loader import get_absolute_resource_path
 
@@ -113,6 +117,9 @@ class Console(metaclass=Singleton):
                             case "m" | "medium":
                                 if argc == 2:   Console.spawn_medium_asteroid((0, 0))
                                 else:           Console.spawn_medium_asteroid((float(args[2]), float(args[3])))
+                    case "e" | "enemy":
+                        if argc <= 1: Console.spawn_enemy((0, 0)); return
+                        if argc == 3: Console.spawn_enemy((float(args[1]), float(args[2])))
             case "r" | "repeat":
                 Console.run_command(Console.last_command, Console.last_args, len(Console.last_args))
             case _:
@@ -141,6 +148,16 @@ class Console(metaclass=Singleton):
             ),
             ObjectCategory.MISC
         )
+
+    @staticmethod
+    def spawn_enemy(offset: arcade.Vector) -> None:
+        player: PlayerShip = EntityHandler.categorized[ObjectCategory.PLAYER][0]  # TODO ugly
+        if player is None: return
+        enemy1 = EnemyShip((player.position[0] + offset[0], player.position[1] + offset[1]))
+        EntityHandler.add(enemy1, ObjectCategory.ENEMIES)
+        calm = CalmState(enemy1)
+        behavior1 = FiniteStateMachine(calm, [AttackingState(enemy1, calm, player, player)], resumable=True)
+        enemy1.add_behavior(behavior1)
 
 
 if __name__ == '__main__':
