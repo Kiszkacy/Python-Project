@@ -6,7 +6,7 @@ from src.auxilary.MovementType import MovementType
 from src.entities.Entity import Entity
 from src.interfaces.Damageable import Damageable
 from src.interfaces.Destroyable import Destroyable
-from src.util.VectorMath import normalize, length
+from src.util.VectorMath import normalize, length, clamp
 from src.weapons.LaunchableGun import LaunchableGun
 from src.weapons.Weapon import Weapon
 from src.singletons.CollisionHandler import CollisionHandler
@@ -66,11 +66,44 @@ class Ship(Entity, Collidable, Damageable, Destroyable):
         for weapon in self.weapons:
             weapon.process(delta_time)
 
-
     def fly(self, delta: float) -> None:
-        direction: arcade.Vector = (np.cos(np.deg2rad(self.angle)), np.sin(np.deg2rad(self.angle))) # already normalized
-        acceleration_vector: arcade.Vector = (direction[0]*self.acceleration, direction[1]*self.acceleration)
-        self.velocity = (self.velocity[0] + acceleration_vector[0]*delta, self.velocity[1] + acceleration_vector[1]*delta)
+        direction: arcade.Vector = (
+                np.cos(np.deg2rad(self.angle)), np.sin(np.deg2rad(self.angle)))  # already normalized
+        acceleration_vector: arcade.Vector = (direction[0] * self.acceleration, direction[1] * self.acceleration)
+        self.velocity = (
+                self.velocity[0] + acceleration_vector[0] * delta, self.velocity[1] + acceleration_vector[1] * delta)
+        self.velocity = clamp(self.velocity, 0.0, self.max_speed)
+
+
+    def rotate_towards(self, delta: float, target_angle_radians: float) -> None:
+        target_angle_rad: float = target_angle_radians
+
+        if target_angle_rad < 0.0: target_angle_rad += 2 * np.pi
+        angle_rad: float = np.deg2rad(self.angle)
+        rotation_rad: float = np.deg2rad(self.rotation_speed)
+        angle_rad_diff: float = target_angle_rad - angle_rad
+        # rotation clockwise or anticlockwise?
+        clockwise: bool = False
+        if abs(angle_rad_diff) <= rotation_rad * delta:
+            # jump to target angle if small
+            angle_rad = target_angle_rad
+        elif angle_rad_diff > 0 and abs(angle_rad_diff) >= np.pi:
+            clockwise = True
+        elif angle_rad_diff < 0 and abs(angle_rad_diff) < np.pi:
+            clockwise = True
+
+        if angle_rad != target_angle_rad and clockwise:
+            angle_rad -= rotation_rad * delta
+        elif angle_rad != target_angle_rad:
+            angle_rad += rotation_rad * delta
+
+        if angle_rad > 2 * np.pi:
+            angle_rad -= 2 * np.pi
+        elif angle_rad < 0:
+            angle_rad += 2 * np.pi
+
+        self.angle = np.degrees(angle_rad)
+
 
 
     def fire(self) -> None:

@@ -15,7 +15,7 @@ class PlayerShip(Ship): # TODO
 
     def __init__(self, starting_position: arcade.Point) -> None:
         super().__init__(sprite_url="..\\resources\\sprites\\tmp_ship0.png",
-                         weapons=[WeaponBasic(), WeaponShotgun(), WeaponAura(), WeaponSinus(), WeaponWeird()],
+                         weapons=[WeaponBasic(ObjectCategory.PLAYER), WeaponShotgun(), WeaponAura(), WeaponSinus(), WeaponWeird()],
                          weapon_count=5,
                          belongs_to=ObjectCategory.PLAYER,
                          collides_with=[ObjectCategory.STATIC, ObjectCategory.ENEMIES, ObjectCategory.PROJECTILES])
@@ -53,30 +53,7 @@ class PlayerShip(Ship): # TODO
         x_diff: float = mouse[0] - self.position[0]
         y_diff: float = mouse[1] - self.position[1]
         target_angle_rad: float = np.arctan2(y_diff, x_diff)
-        if target_angle_rad < 0.0: target_angle_rad += 2 * np.pi
-        # how to rotate calculations
-        angle_rad: float = np.deg2rad(self.angle)
-        rotation_rad: float = np.deg2rad(self.rotation_speed)
-        angle_rad_diff: float = target_angle_rad - angle_rad
-        # rotation clockwise or anticlockwise?
-        clockwise: bool = False
-        if abs(angle_rad_diff) <= rotation_rad * delta:
-            # jump to target angle if small
-            angle_rad = target_angle_rad
-        elif angle_rad_diff > 0 and abs(angle_rad_diff) >= np.pi:
-            clockwise = True
-        elif angle_rad_diff < 0 and abs(angle_rad_diff) < np.pi:
-            clockwise = True
-
-        if angle_rad != target_angle_rad and clockwise:
-            angle_rad -= rotation_rad * delta
-        elif angle_rad != target_angle_rad:
-            angle_rad += rotation_rad * delta
-
-        if angle_rad > 2 * np.pi:   angle_rad -= 2 * np.pi
-        elif angle_rad < 0:         angle_rad += 2 * np.pi
-
-        self.angle = np.degrees(angle_rad)
+        self.rotate_towards(delta, target_angle_rad)
 
 
 if __name__ == '__main__':
