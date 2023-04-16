@@ -1,6 +1,6 @@
-
-from src.behaviors.behavior import Behavior
 from src.game.main.enums.behavior_status import BehaviorStatus
+from src.game.main.behaviors.behavior import Behavior
+
 
 
 class State(Behavior):

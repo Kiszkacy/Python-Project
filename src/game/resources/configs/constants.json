@@ -1,0 +1,5 @@
+{
+    "WEAPONS_MAX": 5,
+    "DASHES_MAX": 3,
+    "DASH_CD": 3.5
+}

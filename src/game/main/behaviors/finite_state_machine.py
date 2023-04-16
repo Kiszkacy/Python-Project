@@ -13,7 +13,6 @@ class FiniteStateMachine(State):
         self.back_log: FiniteStateMachine | State = None    #could be a queue
         self.loop = loop
 
-
     def priority_checks(self):
         for priority_state in self.priority_states:
             if self.state != priority_state and priority_state.check():
