@@ -5,9 +5,9 @@ import numpy as np
 
 from src.game.main.behaviors.state import State
 from src.game.main.enums.behavior_status import BehaviorStatus
-from src.game.main.enums.object_category import ObjectCategory
 from src.game.main.interfaces.collidable import Collidable
 from src.game.main.singletons.entity_handler import EntityHandler
+from src.game.main.enums.object_category import ObjectCategory
 from src.game.main.util.math import distance2D
 
 
