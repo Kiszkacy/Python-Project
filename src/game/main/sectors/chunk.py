@@ -5,7 +5,9 @@ import numpy as np
 
 from arcade import SpriteList
 
+from src.game.main.enums.object_category import ObjectCategory
 from src.game.main.singletons.config import Config
+from src.game.main.singletons.entity_handler import EntityHandler
 
 
 class Chunk:
@@ -23,12 +25,12 @@ class Chunk:
         self.probabilities: list[float] = probabilities
         self.cumulative_probability: float = cumulative_probability
 
-    def generate(self, left_corner: tuple[int, int]) -> SpriteList:
+    def _generate(self, left_corner: tuple[int, int]) -> SpriteList:
         if len(self.objects) == 0:
             return SpriteList()
 
         generated_objects: SpriteList = SpriteList(use_spatial_hash=True)
-        avg_area: float = sum(sprite.height * sprite.width for sprite in self.objects) / len(self.objects)
+        avg_area: float = sum(sprite.height * sprite.width * self.probabilities[i] for i, sprite in enumerate(self.objects))
         total_area: int = self.size*self.size
         amount_of_objects: int = math.floor((total_area / avg_area) * self.density)  # approximate amount of objects
         # to reach desired density
@@ -54,3 +56,11 @@ class Chunk:
                     successful = True
 
         return generated_objects
+
+    def generate(self, left_corner: tuple[int, int]):
+        """
+        should not be called, it's need to be overwritten for it's child
+        :param left_corner: left corner coordinates of chunk
+        :return: None
+        """
+        EntityHandler.add(self._generate(left_corner), ObjectCategory.ENEMIES)

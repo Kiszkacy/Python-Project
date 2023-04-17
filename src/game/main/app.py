@@ -2,17 +2,13 @@ import copy
 import time
 from typing import Tuple
 import arcade
-from arcade import SpriteList
 
 from src.game.main.background_drawer import BackgroundDrawer
 
-from src.game.main.behaviors.finite_state_machine import FiniteStateMachine
-from src.game.main.entities.enemies.enemy_ship import EnemyShip
 from src.game.main.entities.player_ship import PlayerShip
 from src.game.main.enums.input_mode import InputMode
 from src.game.main.enums.object_category import ObjectCategory
 from src.game.main.gui.hud import HUD
-from src.game.main.sectors.chunk import Chunk
 from src.game.main.sectors.sector import Sector
 from src.game.main.sectors.sector_master import SectorMaster
 from src.game.main.sectors.sector_prebuilds.basic_asteroid_chunk import BasicAsteroidChunk
@@ -23,9 +19,9 @@ from src.game.main.singletons.debug.console import Console
 from src.game.main.singletons.debug.debug_critical import DebugCritical
 from src.game.main.singletons.entity_handler import EntityHandler
 from src.game.main.singletons.input_handler import InputHandler
-from src.game.main.behaviors.states.attacking_state import AttackingState
-from src.game.main.behaviors.states.calm_state import CalmState
 from src.game.main.tempclasses.temp_wall import TempWall
+from src.game.main.enums.difficulty import Difficulty
+from src.game.main.enums.sector_size import SectorSize
 
 
 
@@ -44,6 +40,7 @@ class App(arcade.Window):
         self.hud_camera: arcade.Camera = None
         self.hud: HUD = None
         self.background: BackgroundDrawer = None
+        self.sector_master = None
 
 
     def setup(self) -> None:
@@ -69,12 +66,12 @@ class App(arcade.Window):
         self.player_ship = PlayerShip((self.width/2, self.height/2))
         EntityHandler.add(self.player_ship, ObjectCategory.PLAYER)
         EntityHandler.player = self.player_ship
-        ###################################
 
-        s = Sector(1, [EmptyChunk(0.1), BasicEnemyChunk(0.3), BasicAsteroidChunk(0.8, 0.05)])
-        s.generate()
-        SectorMaster().create_dag()
-        ###############################
+        # generating sector
+        self.sector_master = SectorMaster()
+        self.sector_master.initialize()
+        self.sector_master.current_sector.generate()
+
         # TODO sprites loading class
         wall = TempWall()  # temporary
         wall.position = (600,500)  # temporary

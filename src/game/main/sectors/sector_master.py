@@ -5,7 +5,12 @@ from matplotlib import pyplot as plt
 
 import numpy as np
 
+from src.game.main.enums.difficulty import Difficulty
+from src.game.main.enums.sector_size import SectorSize
 from src.game.main.sectors.sector import Sector
+from src.game.main.sectors.sector_prebuilds.basic_asteroid_chunk import BasicAsteroidChunk
+from src.game.main.sectors.sector_prebuilds.basic_enemy_chunk import BasicEnemyChunk
+from src.game.main.sectors.sector_prebuilds.empty_chunk import EmptyChunk
 
 
 class Node:
@@ -14,6 +19,9 @@ class Node:
         if children is None:
             children = []
         self.children = children
+        # TODO temporary
+        self.sector: Sector = Sector(Difficulty.MEDIUM, [EmptyChunk(0.1), BasicEnemyChunk(0.3), BasicAsteroidChunk(1, 0.02)],
+                                     size=SectorSize.SMALL, aspect_ratio=1)
 
     def __str__(self):
         return f"children: {len(self.children)}"
@@ -48,4 +56,10 @@ class SectorMaster:
         print(levels)
         plt.scatter([i for level in levels for i in range(len(level))], [y for y in range(len(levels)) for _ in range(len(levels[y]))])
         plt.show()
+        return levels[0][0]
+
+
+    def initialize(self, max_depth=8, max_width=4, avg_connections=3):
+        self.sector_dag = self.create_dag(max_depth, max_width, avg_connections)
+        self.current_sector = self.sector_dag.sector
 
