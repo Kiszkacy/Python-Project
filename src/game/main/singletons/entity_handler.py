@@ -2,6 +2,7 @@
 import arcade
 
 from src.game.main.enums.object_category import ObjectCategory
+from src.game.main.singletons.config import Config
 from src.game.main.singletons.singleton import Singleton
 
 
@@ -10,10 +11,14 @@ class EntityHandler(metaclass=Singleton):
     # TODO decide which category should use spatial hashes
     categorized: list[arcade.SpriteList] = [arcade.SpriteList(use_spatial_hash=True) for _ in ObjectCategory]
     barrier_list: arcade.AStarBarrierList = None
+    player = None
 
     @staticmethod
-    def add(sprite: arcade.Sprite, category: ObjectCategory) -> None:
-        EntityHandler.categorized[category].append(sprite)
+    def add(sprite: arcade.Sprite | arcade.SpriteList, category: ObjectCategory) -> None:
+        if isinstance(sprite, arcade.Sprite):
+            EntityHandler.categorized[category].append(sprite)
+        else:
+            EntityHandler.categorized[category].extend(sprite)
 
     @staticmethod
     def draw_all() -> None:
@@ -37,10 +42,10 @@ class EntityHandler(metaclass=Singleton):
     def update_barrier_list():
         from src.game.main.entities.enemies.enemy_ship import EnemyShip
         EntityHandler.barrier_list = arcade.AStarBarrierList(EnemyShip((0, 0)),
-                                                             # TODO this values shouldn't be hardcoded
+                                                             # TODO this values shouldn't be hardcoded, very TMP
                                                              EntityHandler.categorized[ObjectCategory.STATIC],
                                                              128,
-                                                             -2000, 2000, -2000, 2000)
+                                                             -2000, Config.Constants["CHUNK_SIZE"]*10, -2000, Config.Constants["CHUNK_SIZE"]*10)
 
 
 if __name__ == '__main__':

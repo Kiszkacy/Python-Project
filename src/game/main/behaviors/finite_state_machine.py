@@ -1,3 +1,5 @@
+from copy import deepcopy
+
 from src.game.main.behaviors.state import State
 from src.game.main.enums.behavior_status import BehaviorStatus
 
@@ -12,6 +14,7 @@ class FiniteStateMachine(State):
         self.priority_states: list[FiniteStateMachine | State] = priority_states
         self.back_log: FiniteStateMachine | State = None    #could be a queue
         self.loop = loop
+
 
     def priority_checks(self):
         for priority_state in self.priority_states:

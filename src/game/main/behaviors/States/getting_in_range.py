@@ -1,4 +1,5 @@
 import math
+from copy import deepcopy
 
 import arcade
 import numpy as np
@@ -42,7 +43,7 @@ class GettingInRange(State):
             if distance2D(self.path[-1], self.target.position) > self.range:
                 self.calculate_path()
 
-        # check if we are close to one of the checkpoints on a path #TODO this number shouldn't be hardcoded?
+        # check if we are close to one of the checkpoints on a path
         if self.path and self.body.collision_radius > distance2D(self.body.position, self.path[self.progress]):
             self.progress += 1
 
@@ -87,3 +88,14 @@ class GettingInRange(State):
         super(GettingInRange, self).reset(context)
         self.target = context[0]
         self.range = context[1]
+
+    def __deepcopy__(self, memodict={}):
+        cls = self.__class__
+        result = cls.__new__(cls)
+        memodict[id(self)] = result
+        for k, v in self.__dict__.items():
+            if k == "player" or k == "context" or k == "target":
+                setattr(result, k, v)
+            else:
+                setattr(result, k, deepcopy(v, memodict))
+        return result

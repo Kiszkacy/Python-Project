@@ -151,13 +151,10 @@ class Console(metaclass=Singleton):
 
     @staticmethod
     def spawn_enemy(offset: arcade.Vector) -> None:
-        player: PlayerShip = EntityHandler.categorized[ObjectCategory.PLAYER][0]  # TODO ugly
+        player: PlayerShip = EntityHandler.player  # TODO ugly
         if player is None: return
         enemy1 = EnemyShip((player.position[0] + offset[0], player.position[1] + offset[1]))
         EntityHandler.add(enemy1, ObjectCategory.ENEMIES)
-        calm = CalmState(enemy1)
-        behavior1 = FiniteStateMachine(calm, [AttackingState(enemy1, calm, player, player)], resumable=True)
-        enemy1.add_behavior(behavior1)
 
 
 if __name__ == '__main__':

@@ -1,6 +1,8 @@
-
+import copy
+import time
 from typing import Tuple
 import arcade
+from arcade import SpriteList
 
 from src.game.main.background_drawer import BackgroundDrawer
 
@@ -10,13 +12,19 @@ from src.game.main.entities.player_ship import PlayerShip
 from src.game.main.enums.input_mode import InputMode
 from src.game.main.enums.object_category import ObjectCategory
 from src.game.main.gui.hud import HUD
+from src.game.main.sectors.chunk import Chunk
+from src.game.main.sectors.sector import Sector
+from src.game.main.sectors.sector_master import SectorMaster
+from src.game.main.sectors.sector_prebuilds.basic_asteroid_chunk import BasicAsteroidChunk
+from src.game.main.sectors.sector_prebuilds.basic_enemy_chunk import BasicEnemyChunk
+from src.game.main.sectors.sector_prebuilds.empty_chunk import EmptyChunk
 from src.game.main.singletons.config import Config
 from src.game.main.singletons.debug.console import Console
 from src.game.main.singletons.debug.debug_critical import DebugCritical
 from src.game.main.singletons.entity_handler import EntityHandler
 from src.game.main.singletons.input_handler import InputHandler
-from src.game.main.tempclasses.attacking_state import AttackingState
-from src.game.main.tempclasses.calm_state import CalmState
+from src.game.main.behaviors.states.attacking_state import AttackingState
+from src.game.main.behaviors.states.calm_state import CalmState
 from src.game.main.tempclasses.temp_wall import TempWall
 
 
@@ -51,7 +59,6 @@ class App(arcade.Window):
         EntityHandler.add(self.player_ship, ObjectCategory.PLAYER)
         # initializing is only necessary if we check for collisions before drawing anything
         EntityHandler.initialize()
-        EntityHandler.update_barrier_list()
         # hud init
         self.hud = HUD(self.player_ship)
         self.hud.init()
@@ -61,16 +68,19 @@ class App(arcade.Window):
         # player ship
         self.player_ship = PlayerShip((self.width/2, self.height/2))
         EntityHandler.add(self.player_ship, ObjectCategory.PLAYER)
+        EntityHandler.player = self.player_ship
         ###################################
-        for i in range(2):
-            enemy1 = EnemyShip((i*100, 300))
-            EntityHandler.add(enemy1, ObjectCategory.ENEMIES)
-            calm = CalmState(enemy1)
-            behavior1 = FiniteStateMachine(calm, [AttackingState(enemy1, calm, self.player_ship, self.player_ship)], resumable=True)
-            enemy1.add_behavior(behavior1)
+
+        s = Sector(1, [EmptyChunk(0.1), BasicEnemyChunk(0.3), BasicAsteroidChunk(0.8, 0.05)])
+        s.generate()
+        SectorMaster().create_dag()
+        ###############################
         # TODO sprites loading class
         wall = TempWall()  # temporary
         wall.position = (600,500)  # temporary
+        EntityHandler.update_barrier_list()
+
+
 
     def on_update(self, delta_time: float) -> None:
         # arcade.print_timings() # TMP print fps timings
