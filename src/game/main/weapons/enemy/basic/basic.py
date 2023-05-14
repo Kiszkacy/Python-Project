@@ -9,7 +9,7 @@ from src.game.main.weapons.weapon import Weapon
 class ProjectileBasic(Projectile):
 
     def __init__(self) -> None:
-        Projectile.__init__(self, sprite_url=get_absolute_resource_path("\\sprites\\tmp_projectile0.png"),
+        Projectile.__init__(self, sprite_url=get_absolute_resource_path("\\sprites\\projectiles\\small_005.png"),
                             collides_with=[ObjectCategory.PLAYER, ObjectCategory.MISC, ObjectCategory.STATIC],
                             damage=3)
 

@@ -17,4 +17,4 @@ class BasicEnemyChunk(Chunk):
 
     def generate(self, left_corner: tuple[int, int]):
         generated_sprites: SpriteList = super()._generate(left_corner)
-        EntityHandler.add(generated_sprites, ObjectCategory.ENEMIES)
+        EntityHandler.extend(generated_sprites, ObjectCategory.ENEMIES)

@@ -19,7 +19,7 @@ from src.game.main.weapons.weird.weird import WeaponWeird
 class PlayerShip(Ship):
 
     def __init__(self, starting_position: arcade.Point) -> None:
-        super().__init__(sprite_url=get_absolute_resource_path("\\sprites\\tmp_ship0.png"),
+        super().__init__(sprite_url=get_absolute_resource_path("\\sprites\\ships\\big_001.png"),
                          mass=50.0,
                          weapons=[WeaponBasic(), WeaponShotgun(), WeaponAura(), WeaponSinus(), WeaponWeird()],
                          weapon_count=5,

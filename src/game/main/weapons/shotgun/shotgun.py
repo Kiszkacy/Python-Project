@@ -48,7 +48,7 @@ class GunShotgunAlt(LaunchableGun):
 class ProjectileShotgunAlt(Projectile):
 
     def __init__(self) -> None:
-        Projectile.__init__(self, sprite_url=get_absolute_resource_path("\\sprites\\tmp_projectile2.png"),
+        Projectile.__init__(self, sprite_url=get_absolute_resource_path("\\sprites\\projectiles\\small_002.png"),
                             damage=12.0,
                             acceleration=-400.0,
                             lifetime=3.0)
@@ -57,7 +57,7 @@ class ProjectileShotgunAlt(Projectile):
 class ProjectileShotgunBig(Projectile):
 
     def __init__(self) -> None:
-        Projectile.__init__(self, sprite_url=get_absolute_resource_path("\\sprites\\tmp_projectile1.png"),
+        Projectile.__init__(self, sprite_url=get_absolute_resource_path("\\sprites\\projectiles\\medium_001.png"),
                             damage=15.0,
                             acceleration=-300.0,
                             falloff_damage=[(1.0, 0.0), (0.5, 500.0)])
@@ -66,7 +66,7 @@ class ProjectileShotgunBig(Projectile):
 class ProjectileShotgunSmall(Projectile):
 
     def __init__(self) -> None:
-        Projectile.__init__(self, sprite_url=get_absolute_resource_path("\\sprites\\tmp_projectile4.png"),
+        Projectile.__init__(self, sprite_url=get_absolute_resource_path("\\sprites\\projectiles\\small_004.png"),
                             damage=8.0,
                             acceleration=-200.0,
                             falloff_damage=[(1.0, 0.0), (0.5, 500.0)])

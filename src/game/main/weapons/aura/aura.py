@@ -8,7 +8,7 @@ from src.game.main.weapons.weapon import Weapon
 class ProjectileAura(Projectile):
 
     def __init__(self) -> None:
-        Projectile.__init__(self, sprite_url=get_absolute_resource_path("\\sprites\\tmp_projectile3.png"),
+        Projectile.__init__(self, sprite_url=get_absolute_resource_path("\\sprites\\projectiles\\small_001.png"),
                             acceleration=350.0,
                             lifetime=1.8)
 

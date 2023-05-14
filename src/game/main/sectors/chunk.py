@@ -63,4 +63,4 @@ class Chunk:
         :param left_corner: left corner coordinates of chunk
         :return: None
         """
-        EntityHandler.add(self._generate(left_corner), ObjectCategory.ENEMIES)
+        EntityHandler.extend(self._generate(left_corner), ObjectCategory.ENEMIES)

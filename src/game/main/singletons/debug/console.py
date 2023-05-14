@@ -6,8 +6,8 @@ from arcade import load_texture
 from arcade.gui import UIManager, UITexturePane, UIInputText, UIBoxLayout, UITextArea
 
 from src.game.main.behaviors.finite_state_machine import FiniteStateMachine
-from src.game.main.entities.asteroids.asteroidMedium import AsteroidMedium
-from src.game.main.entities.asteroids.asteroidSmall import AsteroidSmall
+from src.game.main.entities.asteroids.medium import AsteroidMedium
+from src.game.main.entities.asteroids.small import AsteroidSmall
 from src.game.main.entities.enemies.enemy_ship import EnemyShip
 from src.game.main.entities.player_ship import PlayerShip
 from src.game.main.enums.input_mode import InputMode

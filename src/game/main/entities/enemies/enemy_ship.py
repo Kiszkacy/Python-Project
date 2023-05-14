@@ -14,11 +14,11 @@ class EnemyShip(Ship): # TODO
         if weapons is None:
             weapons = [WeaponBasic()]
 
-        super().__init__(sprite_url=get_absolute_resource_path("\\sprites\\tmp_ship1.png"),
+        super().__init__(sprite_url=get_absolute_resource_path("\\sprites\\ships\\small_002.png"),
                          weapons=weapons,
                          weapon_count=len(weapons),
                          belongs_to=ObjectCategory.ENEMIES,
-                         collides_with=[ObjectCategory.STATIC, ObjectCategory.PLAYER, ObjectCategory.PROJECTILES],
+                         collides_with=[ObjectCategory.STATIC, ObjectCategory.PLAYER, ObjectCategory.PROJECTILES, ObjectCategory.ENEMIES],
                          deceleration=600,
                          mass=50)
 

@@ -18,7 +18,7 @@ class GunSinus(LaunchableGun):
 class ProjectileSinus(Projectile):
 
     def __init__(self) -> None:
-        Projectile.__init__(self, sprite_url=get_absolute_resource_path("\\sprites\\tmp_projectile0.png"),
+        Projectile.__init__(self, sprite_url=get_absolute_resource_path("\\sprites\\projectiles\\small_004.png"),
                             movement_type=SinusoidalMovement(16.0, 96.0, 800.0, np.random.uniform()*np.pi*2))
 
     def __deepcopy__(self, memo):

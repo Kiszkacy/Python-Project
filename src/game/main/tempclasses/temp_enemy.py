@@ -12,7 +12,7 @@ from src.game.main.weapons.shotgun.shotgun import WeaponShotgun
 class TempEnemy(Ship, Launchable):
 
     def __init__(self) -> None:
-        super().__init__(sprite_url=get_absolute_resource_path("\\sprites\\tmp_ship1.png"),
+        super().__init__(sprite_url=get_absolute_resource_path("\\sprites\\ships\\small_002.png"),
                          weapons=[WeaponShotgun()],
                          mass=10.0,
                          weapon_count=1,

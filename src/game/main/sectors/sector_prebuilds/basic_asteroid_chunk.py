@@ -2,8 +2,8 @@ from arcade import SpriteList
 
 from src.game.main.enums.object_category import ObjectCategory
 from src.game.main.sectors.chunk import Chunk
-from src.game.main.entities.asteroids.asteroidMedium import AsteroidMedium
-from src.game.main.entities.asteroids.asteroidSmall import AsteroidSmall
+from src.game.main.entities.asteroids.medium import AsteroidMedium
+from src.game.main.entities.asteroids.small import AsteroidSmall
 from src.game.main.singletons.entity_handler import EntityHandler
 
 
@@ -19,4 +19,4 @@ class BasicAsteroidChunk(Chunk):
     def generate(self, left_corner: tuple[int, int]):
         generated_sprites: SpriteList = super()._generate(left_corner)
         # TODO could add initial velocity for asteroids
-        EntityHandler.add(generated_sprites, ObjectCategory.MISC)
+        EntityHandler.extend(generated_sprites, ObjectCategory.MISC)

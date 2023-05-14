@@ -7,3 +7,7 @@ class Collidable:
         self.belongs_to: ObjectCategory = belongs_to
         self.collides_with: list[ObjectCategory] = collides_with
         # TODO add here object to EntityHandler list?
+
+
+if __name__ == '__main__':
+    pass
