@@ -8,10 +8,8 @@ import numpy as np
 from src.game.main.enums.difficulty import Difficulty
 from src.game.main.enums.sector_size import SectorSize
 from src.game.main.sectors.sector import Sector
-from src.game.main.sectors.sector_prebuilds.basic_asteroid_chunk import BasicAsteroidChunk
-from src.game.main.sectors.sector_prebuilds.basic_enemy_chunk import BasicEnemyChunk
-from src.game.main.sectors.sector_prebuilds.empty_chunk import EmptyChunk
-
+import src.game.main.sectors.bioms as biomes
+# from src.game.main.sectors.bioms import Biom
 
 class Node:
 
@@ -20,8 +18,8 @@ class Node:
             children = []
         self.children = children
         # TODO temporary
-        self.sector: Sector = Sector(Difficulty.MEDIUM, [EmptyChunk(0.1), BasicEnemyChunk(0.3), BasicAsteroidChunk(1, 0.02)],
-                                     size=SectorSize.SMALL, aspect_ratio=1)
+        self.sector: Sector = Sector(Difficulty.MEDIUM, biomes.get_biom_chunks(biomes.Biom.biom2),
+                                     size=SectorSize.MEDIUM, aspect_ratio=1)
 
     def __str__(self):
         return f"children: {len(self.children)}"

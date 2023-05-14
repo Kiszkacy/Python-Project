@@ -70,7 +70,6 @@ class Sector:
             for j in range(self.height):
                 current_chunk = None
                 for k, elem in enumerate(self.chunks):
-                    print(i, j)
                     if elem.cumulative_probability >= grid[i][j]:
                         current_chunk = elem
                         grid[i][j] = k

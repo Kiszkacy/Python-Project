@@ -24,7 +24,10 @@ class EnemyShip(Ship): # TODO
 
         self.position = starting_position
         self.behavior = behavior_creator(self)
+        self.behavior_creator = behavior_creator
 
+    def initialize(self):
+        self.behavior = self.behavior_creator(self)
 
     def on_update(self, delta_time: float = 1 / 60) -> None:
         self.behavior.execute(delta_time)

@@ -11,6 +11,7 @@ class EntityHandler(metaclass=Singleton):
     # TODO decide which category should use spatial hashes
     categorized: list[arcade.SpriteList] = [arcade.SpriteList(use_spatial_hash=True) for _ in ObjectCategory]
     barrier_list: arcade.AStarBarrierList = None
+    player = None
 
     @staticmethod
     def extend(sprite: arcade.SpriteList, category: ObjectCategory) -> None:

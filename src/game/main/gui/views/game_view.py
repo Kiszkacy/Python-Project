@@ -47,6 +47,7 @@ class GameView(View):
         EntityHandler.player = self.player_ship
         # initializing is only necessary if we check for collisions before drawing anything
         EntityHandler.initialize()
+        EntityHandler.player = self.player_ship
         # hud init
         self.hud = HUD(self.player_ship)
         self.hud.init()
