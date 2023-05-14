@@ -5,10 +5,9 @@ import numpy as np
 from arcade import load_texture
 from arcade.gui import UIManager, UITexturePane, UIInputText, UIBoxLayout, UITextArea
 
-from src.game.main.behaviors.finite_state_machine import FiniteStateMachine
 from src.game.main.entities.asteroids.medium import AsteroidMedium
 from src.game.main.entities.asteroids.small import AsteroidSmall
-from src.game.main.entities.enemies.enemy_ship import EnemyShip
+from src.game.main.entities.enemies.enemy_basic import EnemyBasic
 from src.game.main.entities.player_ship import PlayerShip
 from src.game.main.enums.input_mode import InputMode
 from src.game.main.enums.object_category import ObjectCategory
@@ -16,9 +15,6 @@ from src.game.main.singletons.config import Config
 from src.game.main.singletons.entity_handler import EntityHandler
 from src.game.main.singletons.input_handler import InputHandler
 from src.game.main.singletons.singleton import Singleton
-from src.game.main.tempclasses.attacking_state import AttackingState
-from src.game.main.tempclasses.calm_state import CalmState
-from src.game.main.util.math import magnitude
 from src.game.main.util.path_loader import get_absolute_resource_path
 
 
@@ -153,7 +149,7 @@ class Console(metaclass=Singleton):
     def spawn_enemy(offset: arcade.Vector) -> None:
         player: PlayerShip = EntityHandler.player  # TODO ugly
         if player is None: return
-        enemy1 = EnemyShip((player.position[0] + offset[0], player.position[1] + offset[1]))
+        enemy1 = EnemyBasic((player.position[0] + offset[0], player.position[1] + offset[1]))
         EntityHandler.add(enemy1, ObjectCategory.ENEMIES)
 
 

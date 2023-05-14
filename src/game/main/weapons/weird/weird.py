@@ -20,7 +20,7 @@ class GunWeird(LaunchableGun):
 class ProjectileWeird(Projectile):
 
     def __init__(self) -> None:
-        Projectile.__init__(self, sprite_url=get_absolute_resource_path("\\sprites\\projectiles\\small_006.png"),
+        Projectile.__init__(self, sprite_url=get_absolute_resource_path("\\sprites\\projectiles\\small_007.png"),
                             acceleration=-150.0)
 
 

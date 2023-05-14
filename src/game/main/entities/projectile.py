@@ -5,6 +5,8 @@ from typing import Tuple
 
 from src.game.main.entities.entity import Entity
 from src.game.main.enums.object_category import ObjectCategory
+from src.game.main.events.damage_event import DamageEvent
+from src.game.main.events.destroy_event import DestroyEvent
 from src.game.main.interfaces.collidable import Collidable
 from src.game.main.interfaces.damageable import Damageable
 from src.game.main.interfaces.destroyable import Destroyable
@@ -12,6 +14,7 @@ from src.game.main.interfaces.launchable import Launchable
 from src.game.main.movement.linear_movement import LinearMovement
 from src.game.main.movement.movement_type import MovementType
 from src.game.main.singletons.collision_handler import CollisionHandler
+from src.game.main.singletons.event_register import EventRegister
 from src.game.main.util.math import normalize, magnitude
 from src.game.main.util.path_loader import get_absolute_resource_path
 
@@ -66,6 +69,7 @@ class Projectile(Entity, Launchable, Collidable, Destroyable):
 
     def destroy(self) -> Destroyable:
         self.kill()
+        EventRegister.register_new(DestroyEvent(self))
         return self
 
     def handle_collisions(self) -> None:
@@ -81,7 +85,8 @@ class Projectile(Entity, Launchable, Collidable, Destroyable):
         for c in colliders:
             self.penetrations -= 1
             if isinstance(c, Damageable): # TODO this might not be needed?
-                c.damage(self.damage)
+                damage_dealt: float = c.damage(self.damage)
+                EventRegister.register_new(DamageEvent(c, damage_dealt, self))
             if self.penetrations == 0:
                 self.destroy()
                 break

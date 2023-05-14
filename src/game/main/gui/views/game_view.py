@@ -14,6 +14,7 @@ from src.game.main.singletons.entity_handler import EntityHandler
 from src.game.main.singletons.input_handler import InputHandler
 from src.game.main.tempclasses.temp_wall import TempWall
 from src.game.main.vfx.background_drawer import BackgroundDrawer
+from src.game.main.sectors.biomes import BiomeColorTheme
 
 
 class GameView(View):
@@ -51,14 +52,15 @@ class GameView(View):
         # hud init
         self.hud = HUD(self.player_ship)
         self.hud.init()
-        # background
-        self.background = BackgroundDrawer()
-        self.background.init(self.player_ship)
 
         # generating sector
         self.sector_master = SectorMaster()
         self.sector_master.initialize()
         self.sector_master.current_sector.generate()
+
+        # background
+        self.background = BackgroundDrawer()
+        self.background.init(self.player_ship, BiomeColorTheme[self.sector_master.current_sector.type])
 
         # TODO sprites loading class
         wall = TempWall()  # temporary
@@ -94,6 +96,7 @@ class GameView(View):
         # draw background
         self.background.draw()
         # draw sprites
+        EntityHandler.draw(ObjectCategory.ITEMS)
         EntityHandler.draw(ObjectCategory.PROJECTILES)
         EntityHandler.draw(ObjectCategory.STATIC)
         EntityHandler.draw(ObjectCategory.MISC)

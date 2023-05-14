@@ -1,3 +1,6 @@
+from src.game.main.events.damage_event import DamageEvent
+from src.game.main.singletons.event_register import EventRegister
+
 
 class Damageable:
     # TODO move this to config file?

@@ -6,7 +6,6 @@ import pickle
 
 from arcade import SpriteList
 
-from src.game.main.entities.enemies.enemy_ship import EnemyShip
 from src.game.main.enums.object_category import ObjectCategory
 from src.game.main.singletons.config import Config
 from src.game.main.singletons.entity_handler import EntityHandler

@@ -16,23 +16,23 @@ class AsteroidBig(Asteroid):
 
     def __init__(self, starting_velocity: arcade.Vector, starting_position: arcade.Point) -> None:
         Asteroid.__init__(self, sprite_url=get_absolute_resource_path("\\sprites\\asteroids\\big.png"),
-                          hp_max=100.0, mass=250.0, starting_velocity=starting_velocity,
+                          hp_max=100.0, mass=100.0, starting_velocity=starting_velocity, # TODO increase mass in the future
                           starting_position=starting_position)
 
     def destroy(self) -> Destroyable: # on death spawn medium and small asteroids
         for i in range(randrange(1, 2)):
             EntityHandler.add(
                 AsteroidMedium(
-                    starting_position=(self.position[0] + np.random.randint(-90, 90), self.position[1] + np.random.randint(-90, 90)),
+                    starting_position=(self.position[0] + np.random.randint(-120, 120), self.position[1] + np.random.randint(-120, 120)),
                     starting_velocity=(np.random.randint(-5, 5), np.random.randint(-5, 5))
                 ),
                 ObjectCategory.MISC
             )
 
-        for i in range(randrange(2, 3)):
+        for i in range(randrange(1, 3)):
             EntityHandler.add(
                 AsteroidSmall(
-                    starting_position=(self.position[0] + np.random.randint(-90, 90), self.position[1] + np.random.randint(-90, 90)),
+                    starting_position=(self.position[0] + np.random.randint(-120, 120), self.position[1] + np.random.randint(-120, 120)),
                     starting_velocity=(np.random.randint(-5, 5), np.random.randint(-5, 5))
                 ),
                 ObjectCategory.MISC

@@ -7,5 +7,6 @@ class ObjectCategory(IntEnum):
     ENEMIES     = auto() # will fill automatically starting from 1, 2, 3, ...
     PROJECTILES = auto()
     STATIC      = auto()
-    HUD         = auto()
     MISC        = auto()
+    ITEMS       = auto()
+    HUD         = auto()

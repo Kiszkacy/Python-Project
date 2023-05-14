@@ -41,8 +41,8 @@ class EntityHandler(metaclass=Singleton):
 
     @staticmethod
     def update_barrier_list():
-        from src.game.main.entities.enemies.enemy_ship import EnemyShip
-        EntityHandler.barrier_list = arcade.AStarBarrierList(EnemyShip((0, 0)),
+        from src.game.main.entities.enemies.enemy import Enemy
+        EntityHandler.barrier_list = arcade.AStarBarrierList(Enemy((0, 0)),
                                                              # TODO this values shouldn't be hardcoded, very TMP
                                                              EntityHandler.categorized[ObjectCategory.STATIC],
                                                              128,

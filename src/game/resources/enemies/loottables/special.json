@@ -1,0 +1,56 @@
+{
+	"rolls": {
+		"type": "ONE"
+	},
+	"chance": {
+		"type": "ALL"
+	},
+	"entries": [
+		{"name": "SCRAP"},
+		{
+			"rolls": {
+				"type": "CONSTANT",
+				"arg0": 2
+			},
+			"chance": {
+				"type": "ONE_IN_EACH",
+				"arg0": 2
+			},
+			"entries": [
+				{"name": "SCRAP"},
+				{"name": "SCRAP"},
+				{"name": "MEDIUM_DATA_CHIP"},
+				{"name": "ENGINE_PART"}
+			]
+		},
+		{
+			"rolls": {
+				"type": "UNIFORM",
+				"arg0": 2,
+				"arg1": 5
+			},
+			"chance": {
+				"type": "ALL"
+			},
+			"entries": [
+				{"name": "TOXIC_WASTE"}
+			]
+		},
+		{
+			"rolls": {
+				"type": "ONE_IN",
+				"arg0": 2
+			},
+			"chance": {
+				"type": "ONE"
+			},
+			"entries": [
+				{"name": "MEDIUM_DATA_CHIP"},
+				{"name": "LARGE_DATA_CHIP"}
+			]
+		}
+	]
+}
+
+
+

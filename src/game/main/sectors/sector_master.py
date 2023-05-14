@@ -8,8 +8,7 @@ import numpy as np
 from src.game.main.enums.difficulty import Difficulty
 from src.game.main.enums.sector_size import SectorSize
 from src.game.main.sectors.sector import Sector
-import src.game.main.sectors.bioms as biomes
-# from src.game.main.sectors.bioms import Biom
+import src.game.main.sectors.biomes as biomes
 
 class Node:
 
@@ -18,8 +17,8 @@ class Node:
             children = []
         self.children = children
         # TODO temporary
-        self.sector: Sector = Sector(Difficulty.MEDIUM, biomes.get_biom_chunks(biomes.Biom.biom2),
-                                     size=SectorSize.MEDIUM, aspect_ratio=1)
+        self.sector: Sector = Sector(Difficulty.MEDIUM, biomes.get_biome_chunks(biomes.Biome.TOXIC_WASTES),
+                                     size=SectorSize.SMALL, biome_type=biomes.Biome.TOXIC_WASTES, aspect_ratio=1, seed=5)
 
     def __str__(self):
         return f"children: {len(self.children)}"

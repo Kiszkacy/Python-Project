@@ -15,13 +15,16 @@ class BackgroundDrawer(Processable):
         self.tracked_entity: Entity = None
         self.sprite_size: arcade.Vector = (2560, 1440)
 
-    def init(self, tracked_entity: Entity) -> None:
+    def init(self, tracked_entity: Entity, color_theme: arcade.Color) -> None:
         self.tracked_entity = tracked_entity
 
         for i in range(4):
             self.background.append(arcade.Sprite(get_absolute_resource_path("\\sprites\\backgrounds\\stars_001.png")))
+            self.background.color = color_theme
             self.midground.append(arcade.Sprite(get_absolute_resource_path("\\sprites\\backgrounds\\stars_002.png")))
+            self.midground.color = color_theme
             self.foreground.append(arcade.Sprite(get_absolute_resource_path("\\sprites\\backgrounds\\fog_001.png")))
+            self.foreground.color = color_theme
 
     def process(self, delta: float) -> None:
         # move sprites according to tracked_entity position

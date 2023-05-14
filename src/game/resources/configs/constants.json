@@ -3,5 +3,6 @@
     "WEAPONS_MAX": 5,
     "DASHES_MAX": 3,
     "DASH_CD": 3.5,
-    "CHUNK_SIZE": 512
+    "CHUNK_SIZE": 512,
+    "EVENT_REGISTER_SIZE": 32
 }

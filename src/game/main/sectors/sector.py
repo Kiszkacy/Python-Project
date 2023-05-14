@@ -7,17 +7,15 @@ import noise
 import seaborn as sns
 from matplotlib import pyplot as plt
 
-from src.game.main.enums.object_category import ObjectCategory
-from src.game.main.sectors import chunk
+from src.game.main.sectors import chunk, biomes
 from src.game.main.singletons.config import Config
-from src.game.main.singletons.entity_handler import EntityHandler
 from src.game.main.enums.difficulty import Difficulty
 from src.game.main.enums.sector_size import SectorSize
 
 
 class Sector:
 
-    def __init__(self, difficulty: Difficulty, chunks: list[chunk], size: SectorSize,
+    def __init__(self, difficulty: Difficulty, chunks: list[chunk], size: SectorSize, biome_type: biomes.Biome,
                  aspect_ratio: float = 1, seed: int | float = 0):
         """
         :param difficulty: Does nothing for now
@@ -28,6 +26,7 @@ class Sector:
         """
         self.difficulty: Difficulty = difficulty
         self.grid_size: int = Config.Constants["CHUNK_SIZE"]
+        self.type: biomes.Biome = biome_type
         self.seed: int = seed
         self.chunks: list[chunk] = chunks
         self.chunks.sort(key=lambda x: x.cumulative_probability)

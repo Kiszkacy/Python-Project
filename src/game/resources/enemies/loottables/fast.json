@@ -1,0 +1,28 @@
+{
+	"rolls": {
+		"type": "UNIFORM",
+		"arg0": 1,
+		"arg1": 2
+	},
+	"chance": {
+		"type": "ALL"
+	},
+	"entries": [
+		{"name": "SCRAP"},
+		{
+			"rolls": {
+				"type": "ONE_IN",
+				"arg0": 2
+			},
+			"chance": {
+				"type": "ONE"
+			},
+			"entries": [
+				{"name": "ENGINE_PART"},
+				{"name": "LARGE_SCRAP"},
+				{"name": "SMALL_DATA_CHIP"}
+			]
+		}
+	]
+}
+

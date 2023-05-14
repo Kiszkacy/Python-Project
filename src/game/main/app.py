@@ -1,7 +1,6 @@
 
 import arcade
 
-from src.game.main.gui.views.game_view import GameView
 from src.game.main.gui.views.title_screen import TitleScreen
 from src.game.main.gui.views.view import View
 from src.game.main.singletons.config import Config
@@ -15,7 +14,7 @@ class App(arcade.Window): # TODO add minimal window size !!!
         if width == -1: width = Config.Settings.get("SCREEN_WIDTH")
         if height == -1: height = Config.Settings.get("SCREEN_HEIGHT") # TODO overwrite config resolution if provided ?
         super().__init__(width, height, window_title, vsync=False, gl_version=(4,4), resizable=True)
-        arcade.set_background_color(arcade.csscolor.BLACK)
+        arcade.set_background_color(arcade.color.BLACK)
 
     def setup(self) -> None:
         starting_view: View = TitleScreen(self)
