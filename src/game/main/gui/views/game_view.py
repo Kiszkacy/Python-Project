@@ -2,8 +2,6 @@ from typing import Tuple
 
 import arcade
 
-from src.game.main.entities.enemies.enemy import Enemy
-from src.game.main.entities.enemies.enemy_basic import EnemyBasic
 from src.game.main.entities.player_ship import PlayerShip
 from src.game.main.enums.input_mode import InputMode
 from src.game.main.enums.object_category import ObjectCategory
@@ -14,6 +12,7 @@ from src.game.main.singletons.debug.console import Console
 from src.game.main.singletons.debug.debug_critical import DebugCritical
 from src.game.main.singletons.entity_handler import EntityHandler
 from src.game.main.singletons.input_handler import InputHandler
+from src.game.main.particles.particles_handler import ParticlesHandler
 from src.game.main.tempclasses.temp_wall import TempWall
 from src.game.main.vfx.background_drawer import BackgroundDrawer
 from src.game.main.sectors.biomes import BiomeColorTheme
@@ -31,6 +30,7 @@ class GameView(View):
         self.hud: HUD = None
         self.background: BackgroundDrawer = None
         self.sector_master = None
+        self.particle_handler: ParticlesHandler = None
 
     def on_show_view(self):
         arcade.set_background_color(arcade.color.BLACK)
@@ -39,6 +39,9 @@ class GameView(View):
         # camera
         self.camera = arcade.Camera(self.window.width, self.window.height)
         self.hud_camera = arcade.Camera(self.window.width, self.window.height)
+        # particle handler init
+        self.particle_handler = ParticlesHandler(self.window.ctx, self.camera)
+        self.particle_handler.setup()
         # debug setup
         Console.init()
         DebugCritical.init()
@@ -88,6 +91,10 @@ class GameView(View):
 
         # hud
         self.hud.process(delta_time)
+
+        # particles
+        self.particle_handler.process(delta_time)
+
         # background
         self.background.process(delta_time)
 
@@ -97,6 +104,8 @@ class GameView(View):
         self.camera.use()
         # draw background
         self.background.draw()
+        # draw particles
+        self.particle_handler.draw()
         # draw sprites
         # EntityHandler.draw(ObjectCategory.MISC)
         EntityHandler.draw(ObjectCategory.ITEMS)

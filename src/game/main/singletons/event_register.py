@@ -23,6 +23,11 @@ class EventRegister(metaclass=Singleton):
         for observer in EventRegister.observers:
             observer.notify(about)
 
+    @staticmethod
+    def add_observer(observer: Observer) -> bool:
+        EventRegister.observers.append(observer) # TODO check if not a duplicate
+        return True
+
 
 if __name__ == '__main__':
     pass
