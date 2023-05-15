@@ -28,5 +28,5 @@ class LootDrop:
 
 if __name__ == '__main__':
     pass
-    # ld: LootDrop = _.Loader.load_from_json(get_absolute_resource_path("\\enemies\\loottables\\fast.json"))
+    # ld: LootDrop = _.Loader.load_from_json(get_absolute_resource_path("\\loottables\\enemies\\fast.json"))
     # print(ld.calc())

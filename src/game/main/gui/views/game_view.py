@@ -7,6 +7,7 @@ from src.game.main.enums.input_mode import InputMode
 from src.game.main.enums.object_category import ObjectCategory
 from src.game.main.gui.ingame.hud import HUD
 from src.game.main.gui.views.view import View
+from src.game.main.quests.quest_tracker import QuestTracker
 from src.game.main.sectors.sector_master import SectorMaster
 from src.game.main.singletons.debug.console import Console
 from src.game.main.singletons.debug.debug_critical import DebugCritical
@@ -31,6 +32,8 @@ class GameView(View):
         self.background: BackgroundDrawer = None
         self.sector_master = None
         self.particle_handler: ParticlesHandler = None
+        self.main_quest: QuestTracker = None
+        self.side_quest: QuestTracker = None
 
     def on_show_view(self):
         arcade.set_background_color(arcade.color.BLACK)
@@ -54,14 +57,22 @@ class GameView(View):
         # initializing is only necessary if we check for collisions before drawing anything
         EntityHandler.initialize()
         EntityHandler.player = self.player_ship
-        # hud init
-        self.hud = HUD(self.player_ship)
-        self.hud.init()
 
         # generating sector
         self.sector_master = SectorMaster()
         self.sector_master.initialize()
+        self.sector_master.current_sector.pre_generate()
         self.sector_master.current_sector.generate()
+
+        # setup quests
+        self.main_quest = QuestTracker(self.sector_master.current_sector.main_quest)
+        self.main_quest.setup()
+        self.side_quest = QuestTracker(self.sector_master.current_sector.side_quest)
+        self.side_quest.setup()
+
+        # hud init
+        self.hud = HUD(self.player_ship, self.main_quest, self.side_quest)
+        self.hud.init()
 
         # background
         self.background = BackgroundDrawer()
@@ -116,7 +127,7 @@ class GameView(View):
         EntityHandler.draw(ObjectCategory.PLAYER)
         # activate hud camera
         self.hud_camera.use()
-        EntityHandler.draw(ObjectCategory.HUD)
+        self.hud.draw()
         # draw debug
         Console.draw()
         DebugCritical.draw()

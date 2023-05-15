@@ -10,7 +10,7 @@ from src.game.main.weapons.enemy.basic.basic import WeaponBasic
 
 class EnemySpecial(Enemy):
 
-    LOOT_TABLE: LootDrop = LootDropLoader.load_from_json(get_absolute_resource_path("\\enemies\\loottables\\special.json"))
+    LOOT_TABLE: LootDrop = LootDropLoader.load_from_json(get_absolute_resource_path("\\loottables\\enemies\\special.json"))
 
     def __init__(self, starting_position: arcade.Point) -> None:
         super().__init__(starting_position, sprite_url=get_absolute_resource_path("\\sprites\\ships\\medium_002.png"),

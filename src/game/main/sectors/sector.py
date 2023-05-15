@@ -7,6 +7,8 @@ import noise
 import seaborn as sns
 from matplotlib import pyplot as plt
 
+from src.game.main.quests.quest import Quest
+from src.game.main.quests.quest_mapping import QuestConstructor, MainQuests, SideQuests
 from src.game.main.sectors import chunk, biomes
 from src.game.main.singletons.config import Config
 from src.game.main.enums.difficulty import Difficulty
@@ -18,7 +20,7 @@ class Sector:
     def __init__(self, difficulty: Difficulty, chunks: list[chunk], size: SectorSize, biome_type: biomes.Biome,
                  aspect_ratio: float = 1, seed: int | float = 0):
         """
-        :param difficulty: Does nothing for now
+        :param difficulty: used to generate quest data
         :param chunks: list of chunks from witch the world will be generated
         :param size: amount of chunks inside the sector
         :param aspect_ratio: aspect_ratio of generated sector width/height
@@ -34,7 +36,19 @@ class Sector:
         self.height: int = math.floor(math.sqrt(size.value / aspect_ratio))
         self.width: int = math.ceil(self.height*aspect_ratio)
         self.grid: np.array = None
+        self.main_quest: Quest = None
+        self.side_quest: Quest = None
         random.seed(seed)
+
+    # NOTE: here sector should generate its biome and quest type
+    # TODO: biome generation here
+    def pre_generate(self) -> None:
+        self.main_quest = QuestConstructor.get(random.choice(MainQuests))()
+        self.main_quest.generate(self.difficulty, self.seed)
+
+        self.side_quest = QuestConstructor.get(random.choice(SideQuests))()
+        self.side_quest.generate(self.difficulty, self.seed)
+
 
     def generate(self, left_corner=(0, 0)):
         """

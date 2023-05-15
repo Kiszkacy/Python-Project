@@ -11,7 +11,7 @@ from src.game.main.weapons.enemy.basic.basic import WeaponBasic
 
 class EnemyFast(Enemy):
 
-    LOOT_TABLE: LootDrop = LootDropLoader.load_from_json(get_absolute_resource_path("\\enemies\\loottables\\fast.json"))
+    LOOT_TABLE: LootDrop = LootDropLoader.load_from_json(get_absolute_resource_path("\\loottables\\enemies\\fast.json"))
 
     def __init__(self, starting_position: arcade.Point) -> None:
         super().__init__(starting_position, sprite_url=get_absolute_resource_path("\\sprites\\ships\\small_001.png"),

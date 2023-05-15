@@ -6,19 +6,25 @@ from src.game.main.entities.player_ship import PlayerShip
 from src.game.main.enums.object_category import ObjectCategory
 from src.game.main.gui.ingame.hud_flash_screen import HUDFlashScreen
 from src.game.main.interfaces.processable import Processable
+from src.game.main.quests.quest_tracker import QuestTracker
+from src.game.main.quests.quest_type import QuestType
 from src.game.main.singletons.config import Config
 from src.game.main.singletons.entity_handler import EntityHandler
 
 
 class HUD(Processable):
 
-    def __init__(self, player_ship: PlayerShip) -> None:
+    def __init__(self, player_ship: PlayerShip, main_quest: QuestTracker, side_quest: QuestTracker) -> None:
         self.weapon_icons: list[arcade.SpriteSolidColor] = []
         self.health_bar: list[arcade.SpriteSolidColor] = []
         self.shield_bar: list[arcade.SpriteSolidColor] = []
         self.power_bar: list[arcade.SpriteSolidColor] = []
         self.dash_bars: list[arcade.SpriteSolidColor] = []
         self.mission_objective: arcade.SpriteSolidColor = None
+        self.main_quest_tracker: QuestTracker = main_quest
+        self.main_quest_text: arcade.Text = None
+        self.side_quest_tracker: QuestTracker = side_quest
+        self.side_quest_text: arcade.Text = None
         self.hud_flash_screen: HUDFlashScreen = HUDFlashScreen(player_ship)
 
         self.player_ship: PlayerShip = player_ship
@@ -37,11 +43,21 @@ class HUD(Processable):
         # dash bars
         self.dash_bars_init()
         # mission windows
-        self.mission_objective = arcade.SpriteSolidColor(320, 160, (192, 192, 192, 128))
-        self.mission_objective.position = (Config.Settings.get("SCREEN_WIDTH")-16 - 320//2, Config.Settings.get("SCREEN_HEIGHT")-16 - 160//2)
+        self.mission_objective = arcade.SpriteSolidColor(320, 120, (192, 192, 192, 128))
+        self.mission_objective.position = (Config.Settings.get("SCREEN_WIDTH")-16 - 320//2, Config.Settings.get("SCREEN_HEIGHT")-16 - 120//2)
         EntityHandler.add(self.mission_objective, ObjectCategory.HUD)
+        # quest texts
+        self.main_quest_text = arcade.Text(self.main_quest_tracker.quest.get_progress_status_text(),
+                                           Config.Settings.get("SCREEN_WIDTH")-16 - 320//2,
+                                           Config.Settings.get("SCREEN_HEIGHT")+8 - 120//2,
+                                           color=(255,255,255), anchor_x="center", font_size=16)
+        self.side_quest_text = arcade.Text(self.side_quest_tracker.quest.get_progress_status_text(),
+                                           Config.Settings.get("SCREEN_WIDTH")-16 - 320//2,
+                                           Config.Settings.get("SCREEN_HEIGHT")-40 - 120//2,
+                                           color=(255, 255, 255), anchor_x="center", font_size=14)
         # screen flash
         self.hud_flash_screen.init()
+
 
     def bar_init(self, width: int, height: int, padding: int, color_front: Tuple[int, int, int] | Tuple[int, int, int, int],
                  color_back: Tuple[int, int, int] | Tuple[int, int, int, int], color_border: Tuple[int, int, int] | Tuple[int, int, int, int],
@@ -86,6 +102,14 @@ class HUD(Processable):
             self.dash_bars[i].color = (128, 128, 128)
         # screen flash
         self.hud_flash_screen.process(delta)
+        # update quest text
+        self.main_quest_text.text = self.main_quest_tracker.quest.get_progress_status_text()
+        self.side_quest_text.text = self.side_quest_tracker.quest.get_progress_status_text()
+
+    def draw(self) -> None:
+        EntityHandler.draw(ObjectCategory.HUD)
+        self.main_quest_text.draw()
+        self.side_quest_text.draw()
 
 
 if __name__ == '__main__':

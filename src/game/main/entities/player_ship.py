@@ -31,7 +31,7 @@ class PlayerShip(Ship):
         self.position = starting_position
         self.dashes_max: int = Config.Constants.get("DASHES_MAX")
         self.dashes: int = self.dashes_max
-        self.inventory: Inventory = Inventory(50.0) # TODO hardcoded inventory space
+        self.inventory: Inventory = Inventory(200.0) # TODO hardcoded inventory space
         self.harvester: Harvester = Harvester(self.inventory, 256.0, 48.0) # TODO hardcoded pickup range
         # SCRIPT VARS "PRIVATE"
         self.dash_timer: float = 0.0
@@ -117,7 +117,6 @@ class PlayerShip(Ship):
             self.dash_timer_online = False
             return
         self.dash_timer = Config.Constants.get("DASH_CD")
-
 
 
 if __name__ == '__main__':

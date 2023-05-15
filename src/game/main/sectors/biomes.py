@@ -38,9 +38,9 @@ def get_biome_chunks(biome: Biome):
                                     BasicAsteroidChunk(0.35, 0.02), BigAsteroidsChunk(0.75), BasicEnemyChunk(0.85),
                                     BigAsteroidsChunk(1)],
             Biome.CRIMSON_VOID: [EmptyChunk(0.05), BasicEnemyChunk(0.15), EnemyFleetChunk(0.35), BasicAsteroidChunk(0.65, 0.01),
-                                    BasicEnemyChunk(0.85, 0.015), EnemyFleetChunk(1)],
-            Biome.TOXIC_WASTES: [EnemyPatrolChunk(0.1), EmptyChunk(0.1), EnemyPatrolChunk(0.3),
-                                 BasicAsteroidChunk(0.5, 0.01), EmptyChunk(0.8),
+                                 BasicEnemyChunk(0.85, 0.015), EnemyFleetChunk(1)],
+            Biome.TOXIC_WASTES: [EnemyPatrolChunk(0.1), EmptyChunk(0.15), EnemyPatrolChunk(0.3),
+                                 BasicAsteroidChunk(0.5, 0.025), BasicAsteroidChunk(0.65, 0.02), EmptyChunk(0.8),
                                  EnemyPatrolChunk(1, 0.015)]
         }
     return BiomeChunks.get(biome, None)
