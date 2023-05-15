@@ -27,7 +27,7 @@ class Projectile(Entity, Launchable, Collidable, Destroyable):
                  movement_type: MovementType = None, belongs_to: ObjectCategory = ObjectCategory.PROJECTILES,
                  collides_with: list[ObjectCategory] = None) -> None:
 
-        if collides_with is None: collides_with = [ObjectCategory.STATIC, ObjectCategory.ENEMIES, ObjectCategory.MISC]
+        if collides_with is None: collides_with = [ObjectCategory.STATIC, ObjectCategory.ENEMIES, ObjectCategory.NEUTRAL]
         Entity.__init__(self, sprite_url)
         Collidable.__init__(self, belongs_to, collides_with)
         self.damage: float = damage

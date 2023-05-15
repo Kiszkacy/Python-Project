@@ -12,8 +12,8 @@ class Lootable:
     def drop(self, lootdrop: LootDrop, at: arcade.Point) -> None:
         for item in lootdrop.calc():
             EntityHandler.add(ItemEntity(item, # TODO this shouldnt be hardcoded
-                                starting_position=(at[0] + np.random.randint(-50, 90), at[1] + np.random.randint(-90, 90)),
-                                starting_velocity=(np.random.randint(-5, 5), np.random.randint(-5, 5))), ObjectCategory.ITEMS)
+                                starting_position=(at[0] + np.random.randint(-32, 32), at[1] + np.random.randint(-32, 32)),
+                                starting_velocity=(np.random.randint(-9, 9), np.random.randint(-9, 9))), ObjectCategory.ITEMS)
 
 
 if __name__ == '__main__':

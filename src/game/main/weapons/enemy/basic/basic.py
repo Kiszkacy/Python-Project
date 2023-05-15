@@ -10,7 +10,7 @@ class ProjectileBasic(Projectile):
 
     def __init__(self) -> None:
         Projectile.__init__(self, sprite_url=get_absolute_resource_path("\\sprites\\projectiles\\small_006.png"),
-                            collides_with=[ObjectCategory.PLAYER, ObjectCategory.MISC, ObjectCategory.STATIC],
+                            collides_with=[ObjectCategory.PLAYER, ObjectCategory.NEUTRAL, ObjectCategory.STATIC],
                             damage=3)
 
 

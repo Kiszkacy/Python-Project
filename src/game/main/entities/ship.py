@@ -25,20 +25,25 @@ class Ship(Structure):
         self.weapon_count: int = weapon_count
         # SCRIPT VARS "PRIVATE"
         self.weapon_idx: int = 0
+        self.is_flying: bool = False
 
     def on_update(self, delta_time: float = 1 / 60) -> None:
         super(Ship, self).on_update(delta_time)
         # decelerate
-        if magnitude(self.velocity) >= 1.2*self.deceleration*delta_time: # TODO hardcoded move to global const or something
-            direction: arcade.Vector = normalize(self.velocity)
-            self.velocity = (self.velocity[0] - direction[0]*self.deceleration*delta_time, self.velocity[1] - direction[1]*self.deceleration*delta_time)
-        else:
-            self.velocity = (0.0, 0.0)
+        if not self.is_flying:
+            if magnitude(self.velocity) >= 1.2*self.deceleration*delta_time: # TODO hardcoded move to global const or something
+                direction: arcade.Vector = normalize(self.velocity)
+                self.velocity = (self.velocity[0] - direction[0]*self.deceleration*delta_time, self.velocity[1] - direction[1]*self.deceleration*delta_time)
+            else:
+                self.velocity = (0.0, 0.0)
         # update weapons
         for weapon in self.weapons:
             weapon.process(delta_time)
+        # update is_flying check
+        self.is_flying = False
 
     def fly(self, delta: float) -> None:
+        self.is_flying = True
         direction: arcade.Vector = (np.cos(np.deg2rad(self.angle)), np.sin(np.deg2rad(self.angle))) # already normalized
         acceleration_vector: arcade.Vector = (direction[0]*self.acceleration, direction[1]*self.acceleration)
         self.velocity = (self.velocity[0] + acceleration_vector[0]*delta, self.velocity[1] + acceleration_vector[1]*delta)

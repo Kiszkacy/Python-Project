@@ -15,9 +15,9 @@ class Asteroid(Object):
     ROTATION_SPEED: float = 5.0 # in deg
 
     def __init__(self, sprite_url: str, mass: float, hp_max: float, starting_velocity: arcade.Vector, starting_position: arcade.Point,
-                 belongs_to: ObjectCategory = ObjectCategory.MISC, collides_with: list[ObjectCategory] = None) -> None:
+                 belongs_to: ObjectCategory = ObjectCategory.NEUTRAL, collides_with: list[ObjectCategory] = None) -> None:
 
-        if collides_with is None: collides_with = [ObjectCategory.STATIC, ObjectCategory.ENEMIES, ObjectCategory.PLAYER, ObjectCategory.MISC]
+        if collides_with is None: collides_with = [ObjectCategory.STATIC, ObjectCategory.ENEMIES, ObjectCategory.PLAYER, ObjectCategory.NEUTRAL]
         super(Asteroid, self).__init__(sprite_url, mass, belongs_to, collides_with, hp_max, shd_max=0.0)
         self.velocity = starting_velocity
         self.angle_rot: float = (magnitude(starting_velocity) / Asteroid.ROTATION_SPEED_RATIO) * Asteroid.ROTATION_SPEED

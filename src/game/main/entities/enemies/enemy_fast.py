@@ -4,6 +4,7 @@ from src.game.main.entities.enemies.enemy import Enemy
 from src.game.main.interfaces.destroyable import Destroyable
 from src.game.main.lootdrop.loader import Loader as LootDropLoader
 from src.game.main.lootdrop.lootdrop import LootDrop
+from src.game.main.util.math import magnitude
 from src.game.main.util.path_loader import get_absolute_resource_path
 from src.game.main.weapons.enemy.basic.basic import WeaponBasic
 
@@ -15,7 +16,7 @@ class EnemyFast(Enemy):
     def __init__(self, starting_position: arcade.Point) -> None:
         super().__init__(starting_position, sprite_url=get_absolute_resource_path("\\sprites\\ships\\small_001.png"),
                          weapons=[WeaponBasic()],
-                         acceleration=800.0, max_speed=650.0, deceleration=900.0, hp_max=25.0, shd_max=25.0, rotation_speed=270.0)
+                         acceleration=650.0, max_speed=550.0, deceleration=800.0, hp_max=25.0, shd_max=25.0, rotation_speed=360.0)
 
     def destroy(self) -> Destroyable:
         self.drop(EnemyFast.LOOT_TABLE, self.position)

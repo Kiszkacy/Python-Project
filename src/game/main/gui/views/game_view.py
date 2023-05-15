@@ -2,6 +2,8 @@ from typing import Tuple
 
 import arcade
 
+from src.game.main.entities.enemies.enemy import Enemy
+from src.game.main.entities.enemies.enemy_basic import EnemyBasic
 from src.game.main.entities.player_ship import PlayerShip
 from src.game.main.enums.input_mode import InputMode
 from src.game.main.enums.object_category import ObjectCategory
@@ -96,10 +98,11 @@ class GameView(View):
         # draw background
         self.background.draw()
         # draw sprites
+        # EntityHandler.draw(ObjectCategory.MISC)
         EntityHandler.draw(ObjectCategory.ITEMS)
         EntityHandler.draw(ObjectCategory.PROJECTILES)
         EntityHandler.draw(ObjectCategory.STATIC)
-        EntityHandler.draw(ObjectCategory.MISC)
+        EntityHandler.draw(ObjectCategory.NEUTRAL)
         EntityHandler.draw(ObjectCategory.ENEMIES)
         EntityHandler.draw(ObjectCategory.PLAYER)
         # activate hud camera

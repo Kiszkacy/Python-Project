@@ -22,8 +22,8 @@ class Enemy(Ship, Lootable):
                  mass: float = 50.0,
                  hp_max: float = 30.0, shd_max: float = 10.0, power_max: float = 10000.0,
                  power_regen_amount: float = 1000.0,
-                 power_regen_delay: float = 0.0, rotation_speed: float = 180.0, max_speed: float = 450.0,
-                 acceleration: float = 650.0, deceleration: float = 800.0, weapons: list[Weapon] = None) -> None:
+                 power_regen_delay: float = 0.0, rotation_speed: float = 180.0, max_speed: float = 400.0,
+                 acceleration: float = 350.0, deceleration: float = 500.0, weapons: list[Weapon] = None) -> None:
 
         if weapons is None: weapons = [WeaponBasic()] # default
         super().__init__(sprite_url=sprite_url,
@@ -33,7 +33,7 @@ class Enemy(Ship, Lootable):
                          weapons=weapons,
                          weapon_count=len(weapons),
                          belongs_to=ObjectCategory.ENEMIES,
-                         collides_with=[ObjectCategory.STATIC, ObjectCategory.PLAYER, ObjectCategory.PROJECTILES, ObjectCategory.ENEMIES, ObjectCategory.ITEMS])
+                         collides_with=[ObjectCategory.STATIC, ObjectCategory.PLAYER, ObjectCategory.PROJECTILES, ObjectCategory.ENEMIES])
 
         self.position = starting_position
         self.behavior: Behavior = behavior_creator(self)

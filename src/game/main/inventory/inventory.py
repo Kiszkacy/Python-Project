@@ -14,7 +14,7 @@ class Inventory:
 
     def append(self, item: Item, count: int = 1) -> bool:
         if get_item_size(item) and get_item_size(item)*count + self.capacity <= self.max_capacity:
-            self.items.item = self.items.get(item, 0) + count
+            self.items[item] = self.items.get(item, 0) + count
             self.capacity += get_item_size(item)*count
             return True
         return False
@@ -30,7 +30,7 @@ class Inventory:
         # else
         self.capacity += total_capacity
         for item, count in items:
-            self.items.item = self.items.get(item, 0) + count
+            self.items[item] = self.items.get(item, 0) + count
         return True
 
 

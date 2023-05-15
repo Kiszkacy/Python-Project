@@ -13,7 +13,7 @@ from src.game.main.util.path_loader import get_absolute_resource_path
 def test_power_regen_request():
     structure: Structure = Structure(sprite_url=get_absolute_resource_path("\\sprites\\error.png"), # this shouldnt be here
                                      mass=10,
-                                     belongs_to=ObjectCategory.MISC,
+                                     belongs_to=ObjectCategory.NEUTRAL,
                                      collides_with=[],
                                      power_max=10.0)
 

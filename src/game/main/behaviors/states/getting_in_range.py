@@ -44,7 +44,8 @@ class GettingInRange(State):
                 self.calculate_path()
 
         # check if we are close to one of the checkpoints on a path
-        if self.path and self.body.collision_radius > distance2D(self.body.position, self.path[self.progress]):
+        # TODO hardcoded point range
+        if self.path and self.body.collision_radius*2.0 + 128.0 > distance2D(self.body.position, self.path[self.progress]):
             self.progress += 1
 
         if (self.path is None  # there is no path to the target

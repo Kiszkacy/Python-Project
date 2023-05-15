@@ -15,7 +15,7 @@ class EnemyFleetChunk(Chunk):
     objects: list[bytes] = [pickle.dumps(EnemySpecial((0, 0))),
                             pickle.dumps(EnemyTanky((0, 0)))]
 
-    def __init__(self, cumulative_prob, density: float = 0.015):
+    def __init__(self, cumulative_prob, density: float = 0.02):
         super().__init__(density, [0.5, 0.5], cumulative_prob)
 
     def generate(self, left_corner: tuple[int, int]):

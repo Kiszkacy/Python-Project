@@ -26,7 +26,7 @@ class AsteroidMedium(Asteroid):
                     starting_position=(self.position[0] + np.random.randint(-30, 30), self.position[1] + np.random.randint(-30, 30)),
                     starting_velocity=(np.random.randint(-10, 10), np.random.randint(-10, 10))
                 ),
-                ObjectCategory.MISC
+                ObjectCategory.NEUTRAL
             )
         super(AsteroidMedium, self).destroy()
         return self

@@ -5,7 +5,10 @@ import numpy as np
 from src.game.main.entities.ship import Ship
 from src.game.main.enums.input_mode import InputMode
 from src.game.main.enums.object_category import ObjectCategory
+from src.game.main.inventory.harvester import Harvester
+from src.game.main.inventory.inventory import Inventory
 from src.game.main.singletons.config import Config
+from src.game.main.singletons.entity_handler import EntityHandler
 from src.game.main.singletons.input_handler import InputHandler
 from src.game.main.util.math import map_range, clamp
 from src.game.main.util.path_loader import get_absolute_resource_path
@@ -24,10 +27,12 @@ class PlayerShip(Ship):
                          weapons=[WeaponBasic(), WeaponShotgun(), WeaponAura(), WeaponSinus(), WeaponWeird()],
                          weapon_count=5,
                          belongs_to=ObjectCategory.PLAYER,
-                         collides_with=[ObjectCategory.STATIC, ObjectCategory.ENEMIES, ObjectCategory.PROJECTILES, ObjectCategory.MISC])
+                         collides_with=[ObjectCategory.STATIC, ObjectCategory.ENEMIES, ObjectCategory.PROJECTILES, ObjectCategory.NEUTRAL])
         self.position = starting_position
         self.dashes_max: int = Config.Constants.get("DASHES_MAX")
         self.dashes: int = self.dashes_max
+        self.inventory: Inventory = Inventory(50.0) # TODO hardcoded inventory space
+        self.harvester: Harvester = Harvester(self.inventory, 256.0, 48.0) # TODO hardcoded pickup range
         # SCRIPT VARS "PRIVATE"
         self.dash_timer: float = 0.0
         self.dash_timer_online: bool = False
@@ -41,6 +46,9 @@ class PlayerShip(Ship):
             self.dash_timer -= delta_time
             if self.dash_timer <= 0.0:
                 self.dash_regen()
+        # update harvester
+        self.harvester.on_update(delta_time)
+        self.harvester.update_position(self.position)
 
     def process_input(self, delta: float) -> None:
         if InputHandler.mode is not InputMode.INGAME: return

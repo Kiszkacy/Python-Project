@@ -130,7 +130,7 @@ class Console(metaclass=Singleton):
                 starting_position=(player.position[0] + offset[0], player.position[1] + offset[1]),
                 starting_velocity=(np.random.randint(-50, 50), np.random.randint(-50, 50))
             ),
-            ObjectCategory.MISC
+            ObjectCategory.NEUTRAL
         )
 
     @staticmethod
@@ -142,7 +142,7 @@ class Console(metaclass=Singleton):
                 starting_position=(player.position[0] + offset[0], player.position[1] + offset[1]),
                 starting_velocity=(np.random.randint(-50, 50), np.random.randint(-50, 50))
             ),
-            ObjectCategory.MISC
+            ObjectCategory.NEUTRAL
         )
 
     @staticmethod

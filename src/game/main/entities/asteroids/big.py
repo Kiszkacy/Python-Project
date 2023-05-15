@@ -26,7 +26,7 @@ class AsteroidBig(Asteroid):
                     starting_position=(self.position[0] + np.random.randint(-120, 120), self.position[1] + np.random.randint(-120, 120)),
                     starting_velocity=(np.random.randint(-5, 5), np.random.randint(-5, 5))
                 ),
-                ObjectCategory.MISC
+                ObjectCategory.NEUTRAL
             )
 
         for i in range(randrange(1, 3)):
@@ -35,7 +35,7 @@ class AsteroidBig(Asteroid):
                     starting_position=(self.position[0] + np.random.randint(-120, 120), self.position[1] + np.random.randint(-120, 120)),
                     starting_velocity=(np.random.randint(-5, 5), np.random.randint(-5, 5))
                 ),
-                ObjectCategory.MISC
+                ObjectCategory.NEUTRAL
             )
         super(AsteroidBig, self).destroy()
         return self
