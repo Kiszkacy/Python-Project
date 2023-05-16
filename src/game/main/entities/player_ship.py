@@ -14,8 +14,10 @@ from src.game.main.util.math import map_range, clamp
 from src.game.main.util.path_loader import get_absolute_resource_path
 from src.game.main.weapons.aura.aura import WeaponAura
 from src.game.main.weapons.basic.basic import WeaponBasic
+from src.game.main.weapons.flamethrower.flamethrower import WeaponFlamethrower
 from src.game.main.weapons.shotgun.shotgun import WeaponShotgun
 from src.game.main.weapons.sinus.sinus import WeaponSinus
+from src.game.main.weapons.sniper.sniper import WeaponSniper
 from src.game.main.weapons.weird.weird import WeaponWeird
 
 
@@ -24,7 +26,7 @@ class PlayerShip(Ship):
     def __init__(self, starting_position: arcade.Point) -> None:
         super().__init__(sprite_url=get_absolute_resource_path("\\sprites\\ships\\big_001.png"),
                          mass=50.0,
-                         weapons=[WeaponBasic(), WeaponShotgun(), WeaponAura(), WeaponSinus(), WeaponWeird()],
+                         weapons=[WeaponFlamethrower(), WeaponShotgun(), WeaponSniper(), WeaponSinus(), WeaponWeird()],
                          weapon_count=5,
                          belongs_to=ObjectCategory.PLAYER,
                          collides_with=[ObjectCategory.STATIC, ObjectCategory.ENEMIES, ObjectCategory.PROJECTILES, ObjectCategory.NEUTRAL])

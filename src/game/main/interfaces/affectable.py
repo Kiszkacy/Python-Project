@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import List
+from typing import List, Type
 
 import src.game.main.effects.effect as _ # NOTE: a wacky hack to avoid circular imports
 
@@ -14,10 +14,10 @@ class Affectable:
         self.effects.append(effect)
         # TODO add behavior
 
-    def remove_effect(self, effect: _.Effect) -> bool:
-        raise RuntimeError("NOT IMPLEMENTED!")
+    def remove_effect(self, effect: Type[_.Effect]) -> bool:
+        self.effects = [e for e in self.effects if type(e) != effect] # TODO this is very bad redo in the future
 
-    def has_effect(self, effect: _.Effect) -> bool:
+    def has_effect(self, effect: Type[_.Effect]) -> bool:
         return any(isinstance(e, type(effect)) for e in self.effects)
 
 

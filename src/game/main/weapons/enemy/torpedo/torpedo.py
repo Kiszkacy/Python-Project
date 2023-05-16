@@ -6,24 +6,24 @@ from src.game.main.weapons.launchable_gun import LaunchableGun
 from src.game.main.weapons.weapon import Weapon
 
 
-class ProjectileBasic(Projectile):
+class ProjectileTorpedo(Projectile):
 
     def __init__(self) -> None:
-        Projectile.__init__(self, sprite_url=get_absolute_resource_path("\\sprites\\projectiles\\medium_002.png"),
+        Projectile.__init__(self, sprite_url=get_absolute_resource_path("\\sprites\\projectiles\\big_004.png"),
                             collides_with=[ObjectCategory.PLAYER, ObjectCategory.NEUTRAL, ObjectCategory.STATIC],
-                            damage=3, lifetime=2.5)
+                            damage=15, lifetime=1.5, acceleration=750.0)
 
 
-class GunBasic(LaunchableGun):
-
-    def __init__(self) -> None:
-        super().__init__(launchable=ProjectileBasic(), launch_speed=500.0, shots_per_sec=1.5)
-
-
-class WeaponBasic(Weapon):
+class GunTorpedo(LaunchableGun):
 
     def __init__(self) -> None:
-        super(WeaponBasic, self).__init__(GunBasic())
+        super().__init__(launchable=ProjectileTorpedo(), launch_speed=100.0, shots_per_sec=0.4)
+
+
+class WeaponTorpedo(Weapon):
+
+    def __init__(self) -> None:
+        super(WeaponTorpedo, self).__init__(GunTorpedo())
 
 
 if __name__ == '__main__':

@@ -6,24 +6,24 @@ from src.game.main.weapons.launchable_gun import LaunchableGun
 from src.game.main.weapons.weapon import Weapon
 
 
-class ProjectileBasic(Projectile):
+class ProjectileQuick(Projectile):
 
     def __init__(self) -> None:
-        Projectile.__init__(self, sprite_url=get_absolute_resource_path("\\sprites\\projectiles\\medium_002.png"),
+        Projectile.__init__(self, sprite_url=get_absolute_resource_path("\\sprites\\projectiles\\small_005.png"),
                             collides_with=[ObjectCategory.PLAYER, ObjectCategory.NEUTRAL, ObjectCategory.STATIC],
-                            damage=3, lifetime=2.5)
+                            damage=2, lifetime=1.5)
 
 
-class GunBasic(LaunchableGun):
-
-    def __init__(self) -> None:
-        super().__init__(launchable=ProjectileBasic(), launch_speed=500.0, shots_per_sec=1.5)
-
-
-class WeaponBasic(Weapon):
+class GunQuick(LaunchableGun):
 
     def __init__(self) -> None:
-        super(WeaponBasic, self).__init__(GunBasic())
+        super().__init__(launchable=ProjectileQuick(), launch_speed=650.0, shots_per_sec=3.5, barrels_even_offset=24.0, barrel_count=2)
+
+
+class WeaponQuick(Weapon):
+
+    def __init__(self) -> None:
+        super(WeaponQuick, self).__init__(GunQuick())
 
 
 if __name__ == '__main__':
