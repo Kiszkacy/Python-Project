@@ -1,15 +1,1 @@
-{
-    "SHOOT": ["SPACE"],
-    "ALTFIRE": ["F"],
-    "WEAPON0": ["KEY_1"],
-    "WEAPON1": ["KEY_2"],
-    "WEAPON2": ["KEY_3"],
-    "WEAPON3": ["KEY_4"],
-    "WEAPON4": ["KEY_5"],
-    "FLY": ["W", "UP"],
-    "DASH_LEFT": ["A"],
-    "DASH_RIGHT": ["D"],
-    "DASH_TRIGGER": ["LSHIFT"],
-    "CONSOLE": ["BRACKETRIGHT"],
-    "DEBUG_PRINT": ["BRACKETLEFT"]
-}
+{"SHOOT": ["MOD_WINDOWS"], "ALTFIRE": ["F"], "WEAPON0": ["KEY_1"], "WEAPON1": ["KEY_2"], "WEAPON2": ["KEY_3"], "WEAPON3": ["KEY_4"], "WEAPON4": ["KEY_5"], "FLY": ["W", "MOTION_UP"], "DASH_LEFT": ["A"], "DASH_RIGHT": ["D"], "DASH_TRIGGER": ["LSHIFT"], "CONSOLE": ["BRACKETRIGHT"], "DEBUG_PRINT": ["BRACKETLEFT"], "PAUSE": ["ESCAPE"]}

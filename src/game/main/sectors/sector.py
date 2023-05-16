@@ -77,8 +77,7 @@ class Sector:
                                            base=0)
 
         # normalizing the values
-        grid = (grid / np.max(
-            grid))  # * max(self.chunks, key=lambda x: x.cumulative_probability).cumulative_probability
+        grid = ((grid - np.min(grid)) / (np.max(grid) - np.min(grid)))
         for i in range(self.width):
             for j in range(self.height):
                 current_chunk = None

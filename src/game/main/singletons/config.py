@@ -1,3 +1,4 @@
+import inspect
 import json
 import arcade.key as arcade_keys
 
@@ -24,6 +25,7 @@ class Config(metaclass=Singleton):
             keybindings: dict = json.load(f)
 
         for name, value in keybindings.items():
+            print(value)
             Config.Keybindings[name] = [getattr(arcade_keys, key) for key in value]
 
 
@@ -45,3 +47,17 @@ class Config(metaclass=Singleton):
             Config.Constants[name] = value
 
 
+    @staticmethod
+    def change_keybindings(name: str, value: list[str]) -> None:
+        Config.Keybindings[name] = value
+        with open(get_absolute_resource_path("\\configs\\keybindings.json"), "w") as f:
+            to_write = {k: [Config.get_key_name(key) for key in v] for k,v in Config.Keybindings.items()}
+            json.dump(to_write, f)
+
+
+    @staticmethod
+    def get_key_name(key: int) -> str:
+        for name, constant_value in inspect.getmembers(arcade_keys):
+            if constant_value == key:
+                return name
+        return None

@@ -49,7 +49,7 @@ class Menu(FadingView):
         self.switch_view(SectorMap(self.window))
 
     def on_click_settings_button(self, event: gui.events.UIEvent) -> None:
-        self.switch_view(Settings(self.window))
+        self.switch_view(Settings(self.window, self, arcade.color.GRAY))
 
     def on_click_exit_button(self, event: gui.events.UIEvent) -> None:
         arcade.exit()

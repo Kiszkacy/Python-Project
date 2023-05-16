@@ -1,5 +1,6 @@
-from typing import Tuple
+from __future__ import annotations
 
+from typing import Tuple
 import arcade
 
 from src.game.main.entities.player_ship import PlayerShip
@@ -9,6 +10,7 @@ from src.game.main.gui.ingame.hud import HUD
 from src.game.main.gui.views.view import View
 from src.game.main.quests.quest_tracker import QuestTracker
 from src.game.main.sectors.sector_master import SectorMaster
+from src.game.main.gui.views.pause import Pause
 from src.game.main.singletons.debug.console import Console
 from src.game.main.singletons.debug.debug_critical import DebugCritical
 from src.game.main.singletons.entity_handler import EntityHandler
@@ -90,6 +92,8 @@ class GameView(View):
             EntityHandler.on_update(delta_time, category) # update everything in that list
         # move camera
         self.center_camera_on_player(delta_time)
+        if InputHandler.key_binding_pressed("PAUSE"):
+            self.switch_view(Pause(self, self.window))
         # debug update
         if InputHandler.key_binding_pressed("CONSOLE"):
             Console.draw_console_box = not Console.draw_console_box
