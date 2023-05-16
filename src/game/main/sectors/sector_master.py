@@ -17,7 +17,7 @@ class Node:
             children = []
         self.children = children
         # TODO temporary
-        self.sector: Sector = Sector(Difficulty.EASY, biomes.get_biome_chunks(biomes.Biome.ASTEROID_FIELDS),
+        self.sector: Sector = Sector(Difficulty.EASY, biomes.get_biome_chunks(biomes.Biome.TOXIC_WASTES),
                                      size=SectorSize.SMALL, biome_type=biomes.Biome.TOXIC_WASTES, aspect_ratio=1, seed=11)
 
     def __str__(self):

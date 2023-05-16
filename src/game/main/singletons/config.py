@@ -25,7 +25,6 @@ class Config(metaclass=Singleton):
             keybindings: dict = json.load(f)
 
         for name, value in keybindings.items():
-            print(value)
             Config.Keybindings[name] = [getattr(arcade_keys, key) for key in value]
 
 

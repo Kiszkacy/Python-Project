@@ -21,6 +21,7 @@ class EventRegister(metaclass=Singleton):
     @staticmethod
     def notify(about: Event) -> None:
         for observer in EventRegister.observers:
+
             observer.notify(about)
 
     @staticmethod

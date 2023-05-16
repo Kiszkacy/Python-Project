@@ -10,11 +10,11 @@ from src.game.main.singletons.player_statistics import PlayerStatistics
 from src.game.main.util.on_exit import on_exit
 from src.game.main.util.random_walk import RandomWalk
 
-class Pause(FadingView):
+class DeathView(FadingView):
 
-    def __init__(self, game, window: arcade.Window) -> None:
-        super(Pause, self).__init__(window)
-        self.game = game
+    def __init__(self, window: arcade.Window, background_color: tuple[int, int, int] = (0, 0, 0)) -> None:
+        super(DeathView, self).__init__(window)
+        self.background_color = background_color
         self.manager: gui.UIManager = arcade.gui.UIManager()
         self.layout: gui.UIBoxLayout = None
         self.background_enemies: list[RandomWalk] = [RandomWalk(EnemyBasic((0,0)), (window.width, window.height)) for _ in range(4)]
@@ -23,19 +23,33 @@ class Pause(FadingView):
         self.manager.enable()
         self.layout = gui.UIBoxLayout()
 
-        title = gui.UILabel(text="PAUSED", text_color=arcade.color.BLACK, font_size=50)
+        title = gui.UILabel(text="You are dead", text_color=arcade.color.BLACK, font_size=50)
         self.layout.add(title)
+
+        box_wrapper = gui.UIBoxLayout(vertical=False, space_between=20)
+        left_box = gui.UIBoxLayout(space_between=10, align="left")
+        right_box = gui.UIBoxLayout(space_between=10, align="right")
+        self.layout.add(box_wrapper)
+        box_wrapper.add(left_box)
+        box_wrapper.add(right_box)
+
         # create buttons
-        button: gui.UIFlatButton = gui.UIFlatButton(text="Continue", width=350, height=100)
-        self.layout.add(button.with_space_around(bottom=40))
+        for stats_name, stats_value in PlayerStatistics.stats.items():
+            left_box.add(gui.UILabel(text=stats_name, text_color=arcade.color.BLACK, font_size=20))
+            right_box.add(gui.UILabel(text=str(stats_value), text_color=arcade.color.BLACK, font_size=20))
+
+        # button = gui.UIFlatButton(text="Settings", width=350)
+        # self.layout.add(button.with_space_around(bottom=40))
+        # button.on_click = self.on_click_settings_button
+        v_box = gui.UIBoxLayout(vertical=False, space_between=20)
+        self.layout.add(v_box)
+
+        button: gui.UIFlatButton = gui.UIFlatButton(text="Try again", width=350, height=40)
+        v_box.add(button.with_space_around(bottom=40))
         button.on_click = self.on_click_continue_button
 
-        button = gui.UIFlatButton(text="Settings", width=350)
-        self.layout.add(button.with_space_around(bottom=40))
-        button.on_click = self.on_click_settings_button
-
         button = gui.UIFlatButton(text="Exit", width=350)
-        self.layout.add(button.with_space_around(bottom=40))
+        v_box.add(button.with_space_around(bottom=40))
         button.on_click = self.on_click_exit_button
 
         # NOTE: I think this magical code automatically centers whole ui ?
@@ -50,13 +64,13 @@ class Pause(FadingView):
         # BUTTON METHODS
         # ==============
 
+    # starts new game
     def on_click_continue_button(self, event: gui.events.UIEvent) -> None:
-        self.window.show_view(self.game)
+        from src.game.main.gui.views.sector_map import SectorMap
+        self.switch_view(SectorMap(self.window))
 
     def on_click_settings_button(self, event: gui.events.UIEvent) -> None:
-        sector_type: biomes.Biome = self.game.sector_master.current_sector.type
-        background_colour: tuple[int, int, int] = biomes.get_biome_color_theme(sector_type)
-        self.switch_view(Settings(self.window, self, background_colour))
+        self.switch_view(Settings(self.window, self, self.background_color))
 
     def on_click_exit_button(self, event: gui.events.UIEvent) -> None:
         on_exit()
@@ -65,17 +79,14 @@ class Pause(FadingView):
         # ==============
 
     def on_update(self, delta_time: float) -> None:
-        super(Pause, self).on_update(delta_time)
+        super(DeathView, self).on_update(delta_time)
         for enemy in self.background_enemies: enemy.walk(delta_time)
-        if InputHandler.key_binding_pressed("PAUSE"):
-            self.window.show_view(self.game)
 
     def on_show_view(self):
-        sector_type: biomes.Biome = self.game.sector_master.current_sector.type
-        arcade.set_background_color(biomes.get_biome_color_theme(sector_type))
+        arcade.set_background_color(self.background_color)
 
     def on_draw(self) -> None:
         self.clear()  # clear old
         for enemy in self.background_enemies: enemy.body.draw()
         self.manager.draw()
-        super(Pause, self).on_draw()  # draw last so fade-in fade-out works
+        super(DeathView, self).on_draw()  # draw last so fade-in fade-out works

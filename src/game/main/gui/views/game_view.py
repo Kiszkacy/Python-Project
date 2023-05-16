@@ -7,8 +7,10 @@ from src.game.main.entities.player_ship import PlayerShip
 from src.game.main.enums.input_mode import InputMode
 from src.game.main.enums.object_category import ObjectCategory
 from src.game.main.gui.ingame.hud import HUD
+from src.game.main.gui.views.death_view import DeathView
 from src.game.main.gui.views.view import View
 from src.game.main.quests.quest_tracker import QuestTracker
+from src.game.main.sectors import biomes
 from src.game.main.sectors.sector_master import SectorMaster
 from src.game.main.gui.views.pause import Pause
 from src.game.main.singletons.debug.console import Console
@@ -16,6 +18,7 @@ from src.game.main.singletons.debug.debug_critical import DebugCritical
 from src.game.main.singletons.entity_handler import EntityHandler
 from src.game.main.singletons.input_handler import InputHandler
 from src.game.main.particles.particles_handler import ParticlesHandler
+from src.game.main.singletons.player_statistics import PlayerStatistics
 from src.game.main.tempclasses.temp_wall import TempWall
 from src.game.main.vfx.background_drawer import BackgroundDrawer
 from src.game.main.sectors.biomes import BiomeColorTheme
@@ -50,6 +53,7 @@ class GameView(View):
         # debug setup
         Console.init()
         DebugCritical.init()
+        PlayerStatistics.innit()
         arcade.enable_timings(120) # TMP enable fps timings
         # InputHandler.init() # should be called after loading config
         # player ship
@@ -92,6 +96,12 @@ class GameView(View):
             EntityHandler.on_update(delta_time, category) # update everything in that list
         # move camera
         self.center_camera_on_player(delta_time)
+
+        if not PlayerStatistics.player_alive:
+            sector_type: biomes.Biome = self.sector_master.current_sector.type
+            self.switch_view(DeathView(self.window, biomes.get_biome_color_theme(sector_type)))
+            return
+
         if InputHandler.key_binding_pressed("PAUSE"):
             self.switch_view(Pause(self, self.window))
         # debug update
