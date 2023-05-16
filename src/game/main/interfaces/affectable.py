@@ -15,10 +15,10 @@ class Affectable:
         # TODO add behavior
 
     def remove_effect(self, effect: Type[_.Effect]) -> bool:
-        self.effects = [e for e in self.effects if type(e) != effect] # TODO this is very bad redo in the future
+        self.effects = [e for e in self.effects if not isinstance(e, effect)] # TODO this is very bad redo in the future
 
     def has_effect(self, effect: Type[_.Effect]) -> bool:
-        return any(isinstance(e, type(effect)) for e in self.effects)
+        return any(isinstance(e, effect) for e in self.effects)
 
 
 if __name__ == '__main__':

@@ -37,7 +37,7 @@ class ActiveEffect(Effect):
         return True
 
     def deactivate(self) -> None:
-        self.target.remove_effect(self)
+        self.target.remove_effect(type(self))
 
     def reset_timer(self) -> None:
         self.tick_timer = self.tick_delay
