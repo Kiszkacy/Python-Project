@@ -30,7 +30,7 @@ class ProjectileFlamethrower(Projectile):
                             damage=4.0, acceleration=-200.0, penetrations=2, lifetime=1.5)
 
     def handle_collisions(self) -> None: # TODO code repetition
-        colliders: list[Collidable] = CollisionHandler.check_collision(self)
+        colliders: list[Collidable] = CollisionHandler.check_collision(self, True)
         if colliders is []: return
 
         for i in range(len(self.colliding_with) - 1, -1, -1):

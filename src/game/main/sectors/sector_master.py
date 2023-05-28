@@ -18,7 +18,7 @@ class Node:
         self.children = children
         # TODO temporary
         self.sector: Sector = Sector(Difficulty.EASY, biomes.get_biome_chunks(biomes.Biome.CRIMSON_VOID),
-                                     size=SectorSize.SMALL, biome_type=biomes.Biome.CRIMSON_VOID, aspect_ratio=1, seed=11)
+                                     size=SectorSize.BIG, biome_type=biomes.Biome.CRIMSON_VOID, aspect_ratio=1, seed=11)
 
     def __str__(self):
         return f"children: {len(self.children)}"

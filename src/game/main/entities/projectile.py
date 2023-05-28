@@ -73,7 +73,7 @@ class Projectile(Entity, Launchable, Collidable, Destroyable):
         return self
 
     def handle_collisions(self) -> None:
-        colliders: list[Collidable] = CollisionHandler.check_collision(self)
+        colliders: list[Collidable] = CollisionHandler.check_collision(self, True)
         if colliders is []: return
 
         for i in range(len(self.colliding_with) - 1, -1, -1):

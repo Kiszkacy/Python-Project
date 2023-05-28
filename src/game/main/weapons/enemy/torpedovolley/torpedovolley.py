@@ -25,7 +25,7 @@ class ProjectileTorpedoVolley(Projectile):
                             damage=10, lifetime=1.5, acceleration=750.0)
 
     def handle_collisions(self) -> None: # TODO code repetition
-        colliders: list[Collidable] = CollisionHandler.check_collision(self)
+        colliders: list[Collidable] = CollisionHandler.check_collision(self, True)
         if colliders is []: return
 
         for i in range(len(self.colliding_with) - 1, -1, -1):
