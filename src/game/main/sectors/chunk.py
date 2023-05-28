@@ -1,3 +1,4 @@
+from __future__ import annotations
 import copy
 import math
 import random
@@ -64,4 +65,4 @@ class Chunk:
         :param left_corner: left corner coordinates of chunk
         :return: None
         """
-        EntityHandler.extend(self._generate(left_corner), ObjectCategory.ENEMIES)
+        EntityHandler.extend(self._generate(left_corner), ObjectCategory.ENEMIES, True)

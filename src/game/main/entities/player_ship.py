@@ -1,4 +1,4 @@
-
+from __future__ import annotations
 import arcade
 import numpy as np
 
@@ -51,6 +51,7 @@ class PlayerShip(Ship):
         # update harvester
         self.harvester.on_update(delta_time)
         self.harvester.update_position(self.position)
+
 
     def process_input(self, delta: float) -> None:
         if InputHandler.mode is not InputMode.INGAME: return

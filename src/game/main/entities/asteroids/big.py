@@ -35,7 +35,7 @@ class AsteroidBig(Asteroid, Lootable):
                     starting_position=(self.position[0] + np.random.randint(-120, 120), self.position[1] + np.random.randint(-120, 120)),
                     starting_velocity=(np.random.randint(-5, 5), np.random.randint(-5, 5))
                 ),
-                ObjectCategory.NEUTRAL
+                ObjectCategory.NEUTRAL, True
             )
 
         for i in range(randrange(1, 3)):
@@ -44,7 +44,7 @@ class AsteroidBig(Asteroid, Lootable):
                     starting_position=(self.position[0] + np.random.randint(-120, 120), self.position[1] + np.random.randint(-120, 120)),
                     starting_velocity=(np.random.randint(-5, 5), np.random.randint(-5, 5))
                 ),
-                ObjectCategory.NEUTRAL
+                ObjectCategory.NEUTRAL, True
             )
         if self.minable: self.drop(AsteroidBig.LOOT_TABLE, self.position)
         super(AsteroidBig, self).destroy()

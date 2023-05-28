@@ -13,6 +13,7 @@ from src.game.main.sectors import chunk, biomes
 from src.game.main.singletons.config import Config
 from src.game.main.enums.difficulty import Difficulty
 from src.game.main.enums.sector_size import SectorSize
+from src.game.main.singletons.entity_handler import EntityHandler
 
 
 class Sector:
@@ -33,8 +34,8 @@ class Sector:
         self.chunks: list[chunk] = chunks
         self.chunks.sort(key=lambda x: x.cumulative_probability)
         self.size: SectorSize = size
-        self.height: int = math.floor(math.sqrt(size.value / aspect_ratio))
-        self.width: int = math.ceil(self.height*aspect_ratio)
+        self.height: int = math.floor(math.sqrt(size.value / aspect_ratio)) # amount of chunks
+        self.width: int = math.ceil(self.height*aspect_ratio) # amount of chunks
         self.grid: np.array = None
         self.main_quest: Quest = None
         self.side_quest: Quest = None
@@ -88,6 +89,9 @@ class Sector:
                         break
                 if current_chunk is None: continue
                 current_chunk.generate((left_corner[0] + i * self.grid_size, left_corner[1] + j * self.grid_size))
+
+        # create pathfinding tree
+        EntityHandler.update_barrier_list(self.width, self.height)
 
         self.grid = grid.T
         ax: matplotlib.axes.Axes = sns.heatmap(self.grid, annot=True)

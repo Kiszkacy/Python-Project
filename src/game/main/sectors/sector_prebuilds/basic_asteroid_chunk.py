@@ -21,4 +21,4 @@ class BasicAsteroidChunk(Chunk):
     def generate(self, left_corner: tuple[int, int]):
         generated_sprites: SpriteList = super()._generate(left_corner)
         # TODO could add initial velocity for asteroids
-        EntityHandler.extend(generated_sprites, ObjectCategory.NEUTRAL)
+        EntityHandler.extend(generated_sprites, ObjectCategory.NEUTRAL, True)

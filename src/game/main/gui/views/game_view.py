@@ -23,6 +23,8 @@ from src.game.main.tempclasses.temp_wall import TempWall
 from src.game.main.vfx.background_drawer import BackgroundDrawer
 from src.game.main.sectors.biomes import BiomeColorTheme
 
+from multiprocessing import Pool
+
 
 class GameView(View):
 
@@ -51,15 +53,10 @@ class GameView(View):
         self.particle_handler = ParticlesHandler(self.window.ctx, self.camera)
         self.particle_handler.setup()
         # debug setup
-        Console.init()
-        DebugCritical.init()
+        # Console.init()
+        # DebugCritical.init()
         PlayerStatistics.innit()
         arcade.enable_timings(120) # TMP enable fps timings
-        # InputHandler.init() # should be called after loading config
-        # player ship
-        self.player_ship = PlayerShip((self.window.width/2, self.window.height/2))
-        EntityHandler.add(self.player_ship, ObjectCategory.PLAYER)
-        EntityHandler.player = self.player_ship
         # initializing is only necessary if we check for collisions before drawing anything
         EntityHandler.initialize()
         EntityHandler.player = self.player_ship
@@ -68,6 +65,13 @@ class GameView(View):
         self.sector_master = SectorMaster()
         self.sector_master.initialize()
         self.sector_master.current_sector.pre_generate()
+        EntityHandler.bucket_init(self.sector_master.current_sector.width, self.sector_master.current_sector.height) # bucket_init after pregenerate before generate !
+
+        # player ship
+        self.player_ship = PlayerShip((self.window.width/2, self.window.height/2))
+        EntityHandler.add(self.player_ship, ObjectCategory.PLAYER, True)
+        EntityHandler.player = self.player_ship
+
         self.sector_master.current_sector.generate()
 
         # setup quests
@@ -84,16 +88,19 @@ class GameView(View):
         self.background = BackgroundDrawer()
         self.background.init(self.player_ship, BiomeColorTheme[self.sector_master.current_sector.type])
 
-        # TODO sprites loading class
-        wall = TempWall()  # temporary
-        wall.position = (600,500)  # temporary
-        EntityHandler.update_barrier_list()
+        # wall = TempWall()  # temporary
+        # wall.position = (600,500)  # temporary
+        # EntityHandler.update_barrier_list()
 
     def on_update(self, delta_time: float) -> None:
-        # arcade.print_timings() # TMP print fps timings
+        arcade.print_timings() # TMP print fps timings
         # can update in custom order
         for category in ObjectCategory:
-            EntityHandler.on_update(delta_time, category) # update everything in that list
+            # EntityHandler.update(delta_time, category) # update everything in that list
+            if category == ObjectCategory.HUD or category == ObjectCategory.PLAYER: # update everything if player or hud
+                EntityHandler.update(delta_time, category)
+            else:
+                EntityHandler.update_close_buckets(delta_time, category)
         # move camera
         self.center_camera_on_player(delta_time)
 
@@ -105,14 +112,14 @@ class GameView(View):
         if InputHandler.key_binding_pressed("PAUSE"):
             self.switch_view(Pause(self, self.window))
         # debug update
-        if InputHandler.key_binding_pressed("CONSOLE"):
-            Console.draw_console_box = not Console.draw_console_box
-            if Console.draw_console_box:    InputHandler.mode = InputMode.CONSOLE
-            else:                           InputHandler.mode = InputMode.INGAME
-        if InputHandler.key_binding_pressed("DEBUG_PRINT"):
-            DebugCritical.print = not DebugCritical.print
-        Console.on_update()
-        DebugCritical.on_update(self.camera)
+        # if InputHandler.key_binding_pressed("CONSOLE"):
+        #     Console.draw_console_box = not Console.draw_console_box
+        #     if Console.draw_console_box:    InputHandler.mode = InputMode.CONSOLE
+        #     else:                           InputHandler.mode = InputMode.INGAME
+        # if InputHandler.key_binding_pressed("DEBUG_PRINT"):
+        #     DebugCritical.print = not DebugCritical.print
+        # Console.on_update()
+        # DebugCritical.on_update(self.camera)
 
         # hud
         self.hud.process(delta_time)
@@ -143,9 +150,8 @@ class GameView(View):
         self.hud_camera.use()
         self.hud.draw()
         # draw debug
-        Console.draw()
-        DebugCritical.draw()
-
+        # Console.draw()
+        # DebugCritical.draw()
 
     def center_camera_on_player(self, delta: float) -> None:
         center_x: float = self.player_ship.center_x - (self.camera.viewport_width / 2)
@@ -154,6 +160,7 @@ class GameView(View):
         center: Tuple[float, float] = (center_x, center_y)
         self.camera.move_to(center, GameView.CAMERA_MOVE_SPEED*delta)
         # self.camera.move(center) # TODO check how it works
+
 
 if __name__ == '__main__':
     pass

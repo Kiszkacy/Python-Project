@@ -23,4 +23,4 @@ class EnemyFleetChunk(Chunk):
         for elem in generated_sprites:
             elem: Enemy = elem
             elem.initialize()
-        EntityHandler.extend(generated_sprites, ObjectCategory.ENEMIES)
+        EntityHandler.extend(generated_sprites, ObjectCategory.ENEMIES, True)

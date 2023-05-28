@@ -34,7 +34,7 @@ class AsteroidMedium(Asteroid, Lootable):
                     starting_position=(self.position[0] + np.random.randint(-30, 30), self.position[1] + np.random.randint(-30, 30)),
                     starting_velocity=(np.random.randint(-10, 10), np.random.randint(-10, 10))
                 ),
-                ObjectCategory.NEUTRAL
+                ObjectCategory.NEUTRAL, True
             )
         if self.minable: self.drop(AsteroidMedium.LOOT_TABLE, self.position)
         super(AsteroidMedium, self).destroy()

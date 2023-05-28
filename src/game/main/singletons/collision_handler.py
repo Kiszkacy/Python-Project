@@ -1,7 +1,9 @@
+from typing import List
 
 import arcade
 import numpy as np
 
+from src.game.main.interfaces.bucketable import Bucketable
 from src.game.main.interfaces.collidable import Collidable
 from src.game.main.singletons.entity_handler import EntityHandler
 from src.game.main.singletons.singleton import Singleton
@@ -10,16 +12,18 @@ from src.game.main.util.math import intersects_lines
 
 class CollisionHandler(metaclass=Singleton):
 
-    # TODO doing detection collision here or in objects? 
-    # active_collidables: list[Collidable] = []
-
     @staticmethod
-    def check_collision(element: Collidable and arcade.Sprite) -> list[Collidable]:
-        layers = [EntityHandler.categorized[layer.value] for layer in element.collides_with]
-        hits = arcade.check_for_collision_with_lists(element, layers)
-        # TODO depending on how we set layers, filtering won't be necessary
-        return [collided for collided in hits if isinstance(collided, Collidable)]
-
+    def check_collision(element: Collidable and arcade.Sprite, bucketable: bool = False) -> list[Collidable]:
+        if bucketable:
+            object: Bucketable = element # we are sure that object is Bucketable if boolean is set to true ! might create problems if careless
+            layers: List[arcade.SpriteList] = [EntityHandler.buckets[object.bucket_y_idx][object.bucket_x_idx][layer.value] for layer in element.collides_with]
+            hits: List[arcade.Sprite] = arcade.check_for_collision_with_lists(element, layers)
+            return [collided for collided in hits]
+        else:
+            layers: List[arcade.SpriteList] = [EntityHandler.categorized[layer.value] for layer in element.collides_with]
+            hits: List[arcade.Sprite] = arcade.check_for_collision_with_lists(element, layers)
+            # TODO i removed filtering check if still works | also IDE shows warnings now
+            return [collided for collided in hits] # if isinstance(collided, Collidable)
 
     @staticmethod
     def get_collision_vector(main_obj: arcade.Sprite, collided_with: arcade.Sprite) -> np.ndarray | None:
@@ -30,7 +34,7 @@ class CollisionHandler(metaclass=Singleton):
 
         # finding intersection points between each pair of segments belonging two hitbox1 and hitbox2
         for i in range(len(hit_box1)):
-            i1, i2 = i, (i+1) % len1
+            i1, i2 = i, (i + 1) % len1
             for j in range(len(hit_box2)):
                 j1, j2 = j, (j + 1) % len2
                 # finding intersection point between two segments belonging two hitbox1 and hitbox2
@@ -44,7 +48,7 @@ class CollisionHandler(metaclass=Singleton):
         if total_intersections == 0:
             return None
         # calculating "centre" of collision
-        centre = sum(intersection_points)/total_intersections
+        centre = sum(intersection_points) / total_intersections
         # vector pointing from the center of collision tho the center of main_obj
         vector = np.array((main_obj.center_x - centre[0], main_obj.center_y - centre[1]))
         return vector

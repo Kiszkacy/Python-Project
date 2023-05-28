@@ -53,7 +53,7 @@ class LaunchableGun(Gun):
         launch_pos: arcade.Vector = (from_[0] + rotated_offset[0], from_[1] + rotated_offset[1])
         instance: Launchable and Entity = deepcopy(self.launchable)
         instance.launch(launch_pos, launch_angle, self.launch_speed)
-        EntityHandler.add(instance, instance.belongs_to)
+        EntityHandler.add(instance, instance.belongs_to, True)
 
 
 if __name__ == '__main__':

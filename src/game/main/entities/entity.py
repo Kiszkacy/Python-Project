@@ -1,7 +1,10 @@
 
 import arcade
 
+from src.game.main.util.force_slots import Slots
 from src.game.main.util.path_loader import get_absolute_resource_path
+
+
 
 
 class Entity(arcade.Sprite):
@@ -12,3 +15,4 @@ class Entity(arcade.Sprite):
 
 if __name__ == '__main__':
     pass
+
