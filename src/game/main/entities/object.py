@@ -30,7 +30,7 @@ class Object(CollidableEntity, Damageable, Destroyable, Affectable):
 
     def damage(self, amount: float) -> float:
         dealt: float = super(Object, self).damage(amount)
-        if self.hp <= 0.0:
+        if self.hp <= 0.0 and dealt != 0.0: # != 0.0 to check if not dead already
             self.destroy()
         return dealt
 

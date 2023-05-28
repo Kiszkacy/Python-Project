@@ -1,0 +1,33 @@
+{
+	"rolls": {
+		"type": "ONE"
+	},
+	"chance": {
+		"type": "ALL"
+	},
+	"entries": [
+		{"name": "SCRAP"},
+		{"name": "SCRAP"},
+		{"name": "LARGE_SCRAP"},
+		{
+			"rolls": {
+				"type": "UNIFORM",
+				"arg0": 1,
+				"arg1": 2
+			},
+			"chance": {
+				"type": "WEIGHTED",
+				"arg0": [1, 3, 2, 1]
+			},
+			"entries": [
+				{"name": "SCRAP"},
+				{"name": "LARGE_SCRAP"},
+				{"name": "MEDIUM_DATA_CHIP"},
+				{"name": "ENGINE_PART"}
+			]
+		}
+	]
+}
+
+
+

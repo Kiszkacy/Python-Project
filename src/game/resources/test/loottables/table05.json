@@ -1,0 +1,28 @@
+{
+	"rolls": {
+		"type": "ONE"
+	},
+	"chance": {
+		"type": "ONE"
+	},
+	"entries": [
+		{
+			"rolls": {"type": "UNIFORM", "arg0": 2, "arg1": 4},
+			"chance": {"type": "ALL"},
+			"entries": [{"name": "GOLD_ORE"}]
+		},
+		{
+			"rolls": {"type": "UNIFORM", "arg0": 1, "arg1": 5},
+			"chance": {"type": "ALL"},
+			"entries": [{"name": "IRON_ORE"}]
+		},
+		{
+			"rolls": {"type": "UNIFORM", "arg0": 2, "arg1": 3},
+			"chance": {"type": "ALL"},
+			"entries": [{"name": "ALUMINIUM_ORE"}]
+		}
+	]
+}
+
+
+

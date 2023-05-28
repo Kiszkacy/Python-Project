@@ -1,0 +1,13 @@
+{
+	"rolls": {
+		"type": "UNIFORM",
+		"arg0": 1,
+		"arg1": 2
+	},
+	"chance": {
+		"type": "ALL"
+	},
+	"entries": [
+		{"name": "SCRAP"}
+	]
+}

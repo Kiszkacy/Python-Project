@@ -7,6 +7,7 @@ from src.game.main.entities.entity import Entity
 from src.game.main.enums.object_category import ObjectCategory
 from src.game.main.events.damage_event import DamageEvent
 from src.game.main.events.destroy_event import DestroyEvent
+from src.game.main.interfaces.bucketable import Bucketable
 from src.game.main.interfaces.collidable import Collidable
 from src.game.main.interfaces.damageable import Damageable
 from src.game.main.interfaces.destroyable import Destroyable
@@ -14,12 +15,14 @@ from src.game.main.interfaces.launchable import Launchable
 from src.game.main.movement.linear_movement import LinearMovement
 from src.game.main.movement.movement_type import MovementType
 from src.game.main.singletons.collision_handler import CollisionHandler
+from src.game.main.singletons.config import Config
+from src.game.main.singletons.entity_handler import EntityHandler
 from src.game.main.singletons.event_register import EventRegister
 from src.game.main.util.math import normalize, magnitude
 from src.game.main.util.path_loader import get_absolute_resource_path
 
 
-class Projectile(Entity, Launchable, Collidable, Destroyable):
+class Projectile(Entity, Launchable, Collidable, Destroyable, Bucketable):
 
     def __init__(self, sprite_url: str = get_absolute_resource_path("\\sprites\\error.png"),
                  damage: float = 10, acceleration: float = 0.0, lifetime: float = 2.0,
@@ -47,8 +50,17 @@ class Projectile(Entity, Launchable, Collidable, Destroyable):
             self.destroy(); return
         # movement update
         self.movement_update(delta_time)
+        self.update_bucket_position()
         # check collisions
         self.handle_collisions()
+
+    def update_bucket_position(self) -> None:
+        bs: int = Config.Constants.get("BUCKET_SIZE")
+        bucket_x: int = int(self.position[0] // bs)
+        bucket_y: int = int(self.position[1] // bs)
+        if bucket_x != self.bucket_x_idx or bucket_y != self.bucket_y_idx:
+            self.remove_from_sprite_lists()
+            EntityHandler.add(self, self.belongs_to, True)
 
     def movement_update(self, delta: float) -> None:
         # acceleration update
