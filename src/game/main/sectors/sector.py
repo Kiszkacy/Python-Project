@@ -1,5 +1,6 @@
 import math
 import random
+from typing import List, Optional
 
 import arcade
 import matplotlib
@@ -8,14 +9,17 @@ import noise
 import seaborn as sns
 from matplotlib import pyplot as plt
 
+from src.game.main.entities.formations.rival_station import RivalStation
 from src.game.main.enums.object_category import ObjectCategory
 from src.game.main.quests.quest import Quest
 from src.game.main.quests.quest_mapping import QuestConstructor, MainQuests, SideQuests
+from src.game.main.quests.quest_type import QuestType
 from src.game.main.sectors import chunk, biomes
 from src.game.main.singletons.config import Config
 from src.game.main.enums.difficulty import Difficulty
 from src.game.main.enums.sector_size import SectorSize
 from src.game.main.singletons.entity_handler import EntityHandler
+from src.game.main.util.rand import one_in
 
 
 class Sector:
@@ -95,13 +99,33 @@ class Sector:
         # create pathfinding tree
         EntityHandler.update_barrier_list(self.width, self.height)
 
+        # place formations
+
+        self.generate_formations()
+
         self.grid = grid.T
         ax: matplotlib.axes.Axes = sns.heatmap(self.grid, annot=True)
         ax.invert_yaxis()
         plt.show()
 
+    def generate_formations(self) -> None:
+        print("YEP")
+        if one_in(2): pass # generate friendly trading station
+        # generate item trade station
+        # generate enemy station if quest needs it
+        if self.main_quest.type_ == QuestType.DESTROY_STATION:
+            print("AHA")
+            formation: RivalStation = RivalStation()
+            pos: Optional[arcade.Point] = None
+            # loops until valid position is found
+            while pos is None:
+                pos = self.find_empty_space(formation.width, formation.height, 1000)
+            formation.place(pos, ObjectCategory.ENEMIES, True)
+            print(pos)
+
+
     def find_empty_space(self, width, height, max_tries=20,
-                         categories: list[ObjectCategory] = (ObjectCategory.ENEMIES, ObjectCategory.STATIC, ObjectCategory.PLAYER, ObjectCategory.NEUTRAL)):
+                         categories: List[ObjectCategory] = (ObjectCategory.ENEMIES, ObjectCategory.STATIC, ObjectCategory.PLAYER, ObjectCategory.NEUTRAL)) -> Optional[arcade.Point]:
         """
         finds empty space on the map
         :param width: Width of the searched area
@@ -122,4 +146,4 @@ class Sector:
                     break
             else:   # no collision detected
                 return position
-        return ()   # no empty space
+        return None   # no empty space

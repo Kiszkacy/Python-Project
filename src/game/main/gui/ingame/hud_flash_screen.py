@@ -10,18 +10,18 @@ from src.game.main.singletons.entity_handler import EntityHandler
 from src.game.main.util.math import map_range
 
 
-class HUDFlashScreen(Processable):
+class HUDFlashScreen(Processable): # TODO use eventRegister instead of saving the hp as variable
 
-    def __init__(self, player_ship: PlayerShip) -> None:
+    def __init__(self) -> None:
         self.shield_break: arcade.SpriteSolidColor = None
         self.damage_shield: arcade.SpriteSolidColor = None
         self.damage_hull: arcade.SpriteSolidColor = None
         self.flash_timer: float = 0.0
         self.active_flash: arcade.SpriteSolidColor = None
 
-        self.player_ship: PlayerShip = player_ship
-        self.previous_hp: float = player_ship.hp
-        self.previous_shd: float = player_ship.shd
+        self.player_ship: PlayerShip = EntityHandler.player
+        self.previous_hp: float = self.player_ship.hp
+        self.previous_shd: float = self.player_ship.shd
 
     def init(self) -> None:
         width: int = Config.Settings.get("SCREEN_WIDTH")

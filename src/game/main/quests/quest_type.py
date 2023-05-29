@@ -4,8 +4,9 @@ from enum import IntEnum, auto
 
 
 class QuestType(IntEnum):
-    KILL_SUM        = 0
-    GATHER_ORE      = auto()
+    KILL_SUM            = 0
+    GATHER_ORE          = auto()
+    DESTROY_STATION     = auto()
 
 
 if __name__ == '__main__':

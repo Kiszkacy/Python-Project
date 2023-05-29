@@ -72,19 +72,22 @@ class CollidableEntity(Entity, Collidable, Bucketable):
             # self.velocity = clamp(self.velocity, 0.0, min(magnitude(self.velocity)*2, 1000.0))
 
             # NOTE: Different approach
-            if collider.belongs_to == ObjectCategory.STATIC:
+            max_mass: float = Config.Constants.get("MAX_MASS")
+            if collider.belongs_to == ObjectCategory.STATIC or collider.mass >= max_mass:
                 relative_vel = -1 * np.array(self.velocity)
             else:
                 relative_vel = np.array(collider.velocity) - np.array(self.velocity)
 
-            if collider.belongs_to == ObjectCategory.STATIC:
+            if collider.belongs_to == ObjectCategory.STATIC or collider.mass >= max_mass:
                 impulse_magnitude = -(2.5) * np.dot(relative_vel, stop_direction) / (1.0 / 10000.0 + 1.0 / self.mass)
             else:
                 impulse_magnitude = -(2.5) * np.dot(relative_vel, stop_direction) / (1.0 / collider.mass + 1.0 / self.mass)
             impulse_vector = stop_direction * impulse_magnitude * delta
 
             self.velocity -= impulse_vector
-            if collider.belongs_to != ObjectCategory.STATIC:
+            if collider.belongs_to == ObjectCategory.STATIC or collider.mass >= max_mass:
+                pass
+            else:
                 collider.velocity += impulse_vector
 
         return collisions

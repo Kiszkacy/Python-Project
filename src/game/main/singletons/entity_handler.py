@@ -13,7 +13,7 @@ from src.game.main.singletons.singleton import Singleton
 class EntityHandler(metaclass=Singleton):
 
     # TODO decide which category should use spatial hashes
-    categorized: List[arcade.SpriteList] = [arcade.SpriteList(use_spatial_hash=True) for _ in ObjectCategory]
+    categorized: List[arcade.SpriteList] = [arcade.SpriteList() for _ in ObjectCategory]
     barrier_list: arcade.AStarBarrierList = None
     player: Optional[p.PlayerShip] = None
     buckets: List[List[List[arcade.SpriteList]]] = []

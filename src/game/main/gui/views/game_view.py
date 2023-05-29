@@ -82,7 +82,7 @@ class GameView(View):
         self.side_quest.setup()
 
         # hud init
-        self.hud = HUD(self.player_ship, self.main_quest, self.side_quest)
+        self.hud = HUD(self.main_quest, self.side_quest)
         self.hud.init()
 
         # background
@@ -140,7 +140,7 @@ class GameView(View):
         # draw particles
         self.particle_handler.draw()
         # draw sprites
-        # EntityHandler.draw(ObjectCategory.MISC)
+        EntityHandler.draw(ObjectCategory.MISC)
         EntityHandler.draw(ObjectCategory.ITEMS)
         EntityHandler.draw(ObjectCategory.PROJECTILES)
         EntityHandler.draw(ObjectCategory.STATIC)

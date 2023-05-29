@@ -23,7 +23,7 @@ class Node:
         self.children: list[Node] = children if children is not None else []
         # TODO temporary
         biome: biomes.Biome = Node.rd.choices(tuple(biomes.Biome), k=1)[0]
-        self.sector: Sector = Sector(Difficulty.EASY, biomes.get_biome_chunks(biome),
+        self.sector: Sector = Sector(Node.rd.choices(tuple(Difficulty), k=1)[0], biomes.get_biome_chunks(biome),
                                      size=Node.rd.choices(tuple(SectorSize), k=1)[0], biome_type=biome, aspect_ratio=1, seed=11)
 
     def add_child(self, child: Node):

@@ -38,7 +38,8 @@ class ProjectileTorpedoVolley(Projectile):
             self.penetrations -= 1
             if isinstance(c, Damageable):  # TODO this might not be needed?
                 damage_dealt: float = c.damage(self.damage)
-                EventRegister.register_new(DamageEvent(c, damage_dealt, self))
+                if damage_dealt != 0.0:
+                    EventRegister.register_new(DamageEvent(c, damage_dealt, self))
                 if isinstance(c, Affectable) and not c.has_effect(DamageEffect):
                     c.add_effect(DamageEffect(c, 5.0, 1.0, 2))
             if self.penetrations == 0:

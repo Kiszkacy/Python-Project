@@ -1,4 +1,5 @@
 from src.game.main.entities.enemies.enemy import Enemy
+from src.game.main.entities.enemies.station.station import EnemyStation
 from src.game.main.events.destroy_event import DestroyEvent
 from src.game.main.events.event import Event
 from src.game.main.events.event_observer import Observer
@@ -25,6 +26,10 @@ class QuestTracker(Observer):
         if self.quest.type_ == QuestType.KILL_SUM and isinstance(event, DestroyEvent):
             destroy_event: DestroyEvent = event
             return isinstance(destroy_event.destroyed, Enemy)
+
+        if self.quest.type_ == QuestType.DESTROY_STATION and isinstance(event, DestroyEvent):
+            destroy_event: DestroyEvent = event
+            return isinstance(destroy_event.destroyed, EnemyStation)
 
         if self.quest.type_ == QuestType.GATHER_ORE and isinstance(event, PickupEvent):
             quest_: QuestGatherOre = self.quest

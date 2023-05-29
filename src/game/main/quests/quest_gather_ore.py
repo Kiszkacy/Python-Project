@@ -19,13 +19,13 @@ class QuestGatherOre(Quest):
         self.ore_type = r.choice([Item.GOLD_ORE, Item.IRON_ORE, Item.ALUMINIUM_ORE])
         match difficulty:
             case Difficulty.EASY:
-                self.amount_needed = randrange(0, 2)*10 + 20
+                self.amount_needed = randrange(0, 2)*5 + 10
             case Difficulty.MEDIUM:
-                self.amount_needed = randrange(0, 2)*10 + 30
+                self.amount_needed = randrange(0, 2)*5 + 15
             case Difficulty.HARD:
-                self.amount_needed = randrange(0, 2)*10 + 40
+                self.amount_needed = randrange(0, 1)*10 + 15
             case Difficulty.EXPERT:
-                self.amount_needed = randrange(0, 1)*25 + 50
+                self.amount_needed = randrange(0, 1)*15 + 15
 
     def advance(self, by: int = 1) -> None:
         super(QuestGatherOre, self).advance(by)

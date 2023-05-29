@@ -98,7 +98,8 @@ class Projectile(Entity, Launchable, Collidable, Destroyable, Bucketable):
             self.penetrations -= 1
             if isinstance(c, Damageable): # TODO this might not be needed?
                 damage_dealt: float = c.damage(self.damage)
-                EventRegister.register_new(DamageEvent(c, damage_dealt, self))
+                if damage_dealt != 0.0:
+                    EventRegister.register_new(DamageEvent(c, damage_dealt, self))
             if self.penetrations == 0:
                 self.destroy()
                 break

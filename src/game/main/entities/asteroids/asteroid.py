@@ -40,7 +40,7 @@ class Asteroid(Object):
 
     def damage(self, amount: float) -> float:
         dealt: float = super(Asteroid, self).damage(amount)
-        if self.hp <= 0.0:
+        if self.hp <= 0.0 and dealt != 0.0:
             self.destroy()
         return dealt
 

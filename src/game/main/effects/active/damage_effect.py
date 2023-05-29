@@ -25,7 +25,8 @@ class DamageEffect(ActiveEffect):
 
     def action(self) -> None:
         amount: float = self.target.damage(self.damage_per_tick)
-        EventRegister.register_new(DamageEvent(self.target, amount, None)) # TODO remove None here
+        if amount != 0.0:
+            EventRegister.register_new(DamageEvent(self.target, amount, None)) # TODO remove None here
         self.reset_timer()
 
 

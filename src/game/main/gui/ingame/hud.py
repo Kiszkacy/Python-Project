@@ -5,6 +5,7 @@ import arcade
 from src.game.main.entities.player_ship import PlayerShip
 from src.game.main.enums.object_category import ObjectCategory
 from src.game.main.gui.ingame.hud_flash_screen import HUDFlashScreen
+from src.game.main.gui.ingame.hud_waypoint import HUDWaypoint
 from src.game.main.interfaces.processable import Processable
 from src.game.main.quests.quest_tracker import QuestTracker
 from src.game.main.quests.quest_type import QuestType
@@ -14,7 +15,9 @@ from src.game.main.singletons.entity_handler import EntityHandler
 
 class HUD(Processable):
 
-    def __init__(self, player_ship: PlayerShip, main_quest: QuestTracker, side_quest: QuestTracker) -> None:
+    def __init__(self, main_quest: QuestTracker, side_quest: QuestTracker) -> None:
+        self.player_ship: PlayerShip = EntityHandler.player
+
         self.weapon_icons: list[arcade.SpriteSolidColor] = []
         self.health_bar: list[arcade.SpriteSolidColor] = []
         self.shield_bar: list[arcade.SpriteSolidColor] = []
@@ -25,9 +28,9 @@ class HUD(Processable):
         self.main_quest_text: arcade.Text = None
         self.side_quest_tracker: QuestTracker = side_quest
         self.side_quest_text: arcade.Text = None
-        self.hud_flash_screen: HUDFlashScreen = HUDFlashScreen(player_ship)
+        self.hud_flash_screen: HUDFlashScreen = HUDFlashScreen()
+        self.hud_waypoint: HUDWaypoint = HUDWaypoint()
 
-        self.player_ship: PlayerShip = player_ship
 
     def init(self) -> None:
         # weapon icons
@@ -55,6 +58,9 @@ class HUD(Processable):
                                            Config.Settings.get("SCREEN_WIDTH")-16 - 320//2,
                                            Config.Settings.get("SCREEN_HEIGHT")-40 - 120//2,
                                            color=(255, 255, 255), anchor_x="center", font_size=14)
+        # waypoint
+        self.hud_waypoint.init()
+
         # screen flash
         self.hud_flash_screen.init()
 
@@ -100,6 +106,8 @@ class HUD(Processable):
             self.dash_bars[i].color = (255, 255, 255)
         for i in range(self.player_ship.dashes, Config.Constants.get("DASHES_MAX")):
             self.dash_bars[i].color = (128, 128, 128)
+        # waypoints
+        self.hud_waypoint.process(delta)
         # screen flash
         self.hud_flash_screen.process(delta)
         # update quest text

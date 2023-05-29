@@ -16,12 +16,14 @@ class Biome(IntEnum):
     ASTEROID_FIELDS = 0, # TODO auto() does not want to work here, why ???
     CRIMSON_VOID = 1, # auto(),
     TOXIC_WASTES = 2, # auto()
+    GOLDEN_NEBULA = 3,
 
 
 BiomeColorTheme: Dict[Biome, arcade.Color] = {
     Biome.ASTEROID_FIELDS: (50, 91, 255),
     Biome.CRIMSON_VOID: (255, 50, 100),
     Biome.TOXIC_WASTES: (50, 255, 100),
+    Biome.GOLDEN_NEBULA: (253, 218, 13),
 }
 
 BiomeChunks: Dict[Biome, list[Chunk]] = None
@@ -40,6 +42,9 @@ def get_biome_chunks(biome: Biome):
             Biome.CRIMSON_VOID: [EmptyChunk(0.05), BasicEnemyChunk(0.15), EnemyFleetChunk(0.35), BasicAsteroidChunk(0.65, 0.01),
                                  BasicEnemyChunk(0.85, 0.015), EnemyFleetChunk(1)],
             Biome.TOXIC_WASTES: [EnemyPatrolChunk(0.1), EmptyChunk(0.15), EnemyPatrolChunk(0.3),
+                                 BasicAsteroidChunk(0.5, 0.025), BasicAsteroidChunk(0.65, 0.02), EmptyChunk(0.8),
+                                 EnemyPatrolChunk(1, 0.015)],
+            Biome.GOLDEN_NEBULA: [EnemyPatrolChunk(0.1), EmptyChunk(0.15), EnemyPatrolChunk(0.3),
                                  BasicAsteroidChunk(0.5, 0.025), BasicAsteroidChunk(0.65, 0.02), EmptyChunk(0.8),
                                  EnemyPatrolChunk(1, 0.015)]
         }

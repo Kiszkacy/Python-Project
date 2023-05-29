@@ -10,4 +10,5 @@ class ObjectCategory(IntEnum):
     NEUTRAL     = auto()
     MISC        = auto()
     ITEMS       = auto()
+    FRIENDLY    = auto()
     HUD         = auto()
