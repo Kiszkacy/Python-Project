@@ -1,12 +1,13 @@
 from __future__ import annotations
 
 from time import sleep
-from typing import Tuple
+from typing import Tuple, Optional
 import arcade
 
 from src.game.main.entities.player_ship import PlayerShip
 from src.game.main.enums.input_mode import InputMode
 from src.game.main.enums.object_category import ObjectCategory
+from src.game.main.events.spawn_event import SpawnEvent
 from src.game.main.gui.ingame.hud import HUD
 from src.game.main.gui.views.death_view import DeathView
 from src.game.main.gui.views.view import View
@@ -17,14 +18,15 @@ from src.game.main.gui.views.pause import Pause
 from src.game.main.singletons.debug.console import Console
 from src.game.main.singletons.debug.debug_critical import DebugCritical
 from src.game.main.singletons.entity_handler import EntityHandler
+from src.game.main.singletons.event_register import EventRegister
 from src.game.main.singletons.input_handler import InputHandler
 from src.game.main.particles.particles_handler import ParticlesHandler
 from src.game.main.singletons.player_statistics import PlayerStatistics
 from src.game.main.tempclasses.temp_wall import TempWall
 from src.game.main.vfx.background_drawer import BackgroundDrawer
 from src.game.main.sectors.biomes import BiomeColorTheme
+from src.game.main.entities.formations.exit_portal import ExitPortal
 
-from multiprocessing import Pool
 
 
 class GameView(View):
@@ -40,8 +42,7 @@ class GameView(View):
         self.background: BackgroundDrawer = None
         self.sector_master = None
         self.particle_handler: ParticlesHandler = None
-        self.main_quest: QuestTracker = None
-        self.side_quest: QuestTracker = None
+        self.exit_portal_spawned: bool = False
 
     def on_show_view(self):
         arcade.set_background_color(arcade.color.BLACK)
@@ -63,7 +64,7 @@ class GameView(View):
         EntityHandler.player = self.player_ship
 
         # generating sector
-        self.sector_master = SectorMaster()
+        self.sector_master: SectorMaster = SectorMaster()
         self.sector_master.initialize()
         self.sector_master.current_sector.pre_generate()
         EntityHandler.bucket_init(self.sector_master.current_sector.width, self.sector_master.current_sector.height) # bucket_init after pregenerate before generate !
@@ -76,13 +77,13 @@ class GameView(View):
         self.sector_master.current_sector.generate()
 
         # setup quests
-        self.main_quest = QuestTracker(self.sector_master.current_sector.main_quest)
-        self.main_quest.setup()
-        self.side_quest = QuestTracker(self.sector_master.current_sector.side_quest)
-        self.side_quest.setup()
+        main_quest: QuestTracker = QuestTracker(self.sector_master.current_sector.main_quest)
+        main_quest.setup()
+        side_quest: QuestTracker = QuestTracker(self.sector_master.current_sector.side_quest)
+        side_quest.setup()
 
         # hud init
-        self.hud = HUD(self.main_quest, self.side_quest)
+        self.hud = HUD(main_quest, side_quest)
         self.hud.init()
 
         # background
@@ -124,12 +125,19 @@ class GameView(View):
 
         # hud
         self.hud.process(delta_time)
-
         # particles
         self.particle_handler.process(delta_time)
-
         # background
         self.background.process(delta_time)
+        # check if main quest is done
+        if not self.exit_portal_spawned and self.sector_master.current_sector.main_quest.is_completed():
+            exit_portal: ExitPortal = ExitPortal()
+            pos: Optional[arcade.Point] = None
+            while pos is None:
+                pos = self.sector_master.current_sector.find_empty_space(exit_portal.width, exit_portal.height, 1000)
+            exit_portal.place(pos, ObjectCategory.FRIENDLY, bucketable=True)
+            EventRegister.register_new(SpawnEvent(exit_portal.entities[0][0], pos))
+            self.exit_portal_spawned = True
 
     def on_draw(self) -> None:
         self.clear() # clean old
@@ -140,13 +148,14 @@ class GameView(View):
         # draw particles
         self.particle_handler.draw()
         # draw sprites
-        EntityHandler.draw(ObjectCategory.MISC)
         EntityHandler.draw(ObjectCategory.ITEMS)
         EntityHandler.draw(ObjectCategory.PROJECTILES)
         EntityHandler.draw(ObjectCategory.STATIC)
+        EntityHandler.draw(ObjectCategory.FRIENDLY)
         EntityHandler.draw(ObjectCategory.NEUTRAL)
         EntityHandler.draw(ObjectCategory.ENEMIES)
         EntityHandler.draw(ObjectCategory.PLAYER)
+        EntityHandler.draw(ObjectCategory.MISC)
         # activate hud camera
         self.hud_camera.use()
         self.hud.draw()

@@ -31,7 +31,7 @@ class RivalStation(Formation):
             station.beacons.append(beacon)
             entities.append((beacon, (0,0)))
 
-        super(RivalStation, self).__init__(width=1000, height=1000, entities=entities)
+        super(RivalStation, self).__init__(width=960, height=960, entities=entities)
 
 
 if __name__ == '__main__':

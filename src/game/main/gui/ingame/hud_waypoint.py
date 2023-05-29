@@ -62,7 +62,7 @@ class HUDWaypoint(Observer, Processable):
     def notify(self, event: Event) -> None:
         if isinstance(event, SpawnEvent) and isinstance(event.spawned, Portal):
             self.waypoints.append(event.spawned)
-            self.waypoints_markers.append(arcade.SpriteSolidColor(32, 32, (93, 218, 95, 32)))
+            self.waypoints_markers.append(arcade.Sprite(texture=arcade.make_circle_texture(32, (93, 218, 95, 32))))
             EntityHandler.add(self.waypoints_markers[-1], ObjectCategory.HUD)
         elif isinstance(event, DestroyEvent) and isinstance(event.destroyed, EnemyStation) and event.destroyed in self.waypoints:
             idx: int = self.waypoints.index(event.destroyed)
