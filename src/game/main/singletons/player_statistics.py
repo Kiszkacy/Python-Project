@@ -17,7 +17,7 @@ class PlayerStatistics(Observer):
     player_alive = True
 
     @staticmethod
-    def innit():
+    def init():
         try:
             with open(get_absolute_resource_path("\\configs\\players_statistics.json"), "r") as f:
                 PlayerStatistics.stats = json.load(f)

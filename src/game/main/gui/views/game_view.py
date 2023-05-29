@@ -13,6 +13,7 @@ from src.game.main.gui.views.death_view import DeathView
 from src.game.main.gui.views.view import View
 from src.game.main.quests.quest_tracker import QuestTracker
 from src.game.main.sectors import biomes
+from src.game.main.sectors.sector import Sector
 from src.game.main.sectors.sector_master import SectorMaster
 from src.game.main.gui.views.pause import Pause
 from src.game.main.singletons.debug.console import Console
@@ -33,66 +34,99 @@ class GameView(View):
 
     CAMERA_MOVE_SPEED: float = 15.0 # TODO move to config
 
-    def __init__(self, window: arcade.Window) -> None:
+    def __init__(self, window: arcade.Window, sector: Sector) -> None:
         super(GameView, self).__init__(window)
         self.player_ship: PlayerShip = None
         self.camera: arcade.Camera = None
         self.hud_camera: arcade.Camera = None
         self.hud: HUD = None
         self.background: BackgroundDrawer = None
-        self.sector_master = None
+        self.sector: Sector = sector
         self.particle_handler: ParticlesHandler = None
         self.exit_portal_spawned: bool = False
+        self.first_load: bool = True
 
     def on_show_view(self):
         arcade.set_background_color(arcade.color.BLACK)
 
     def setup(self) -> None:
-        # camera
-        self.camera = arcade.Camera(self.window.width, self.window.height)
-        self.hud_camera = arcade.Camera(self.window.width, self.window.height)
-        # particle handler init
-        self.particle_handler = ParticlesHandler(self.window.ctx, self.camera)
-        self.particle_handler.setup()
-        # debug setup
-        # Console.init()
-        # DebugCritical.init()
-        PlayerStatistics.innit()
-        arcade.enable_timings(120) # TMP enable fps timings
-        # initializing is only necessary if we check for collisions before drawing anything
-        EntityHandler.initialize()
-        EntityHandler.player = self.player_ship
+        if self.first_load:
+            # camera
+            self.camera = arcade.Camera(self.window.width, self.window.height)
+            self.hud_camera = arcade.Camera(self.window.width, self.window.height)
+            # particle handler init
+            self.particle_handler = ParticlesHandler(self.window.ctx, self.camera)
+            self.particle_handler.setup()
+            # debug setup
+            # Console.init()
+            # DebugCritical.init()
+            PlayerStatistics.init()
+            arcade.enable_timings(120) # TMP enable fps timings
+            # initializing is only necessary if we check for collisions before drawing anything
 
-        # generating sector
-        self.sector_master: SectorMaster = SectorMaster()
-        self.sector_master.initialize()
-        self.sector_master.current_sector.pre_generate()
-        EntityHandler.bucket_init(self.sector_master.current_sector.width, self.sector_master.current_sector.height) # bucket_init after pregenerate before generate !
+            # generating sector map
+            # self.sector_master: SectorMaster = SectorMaster()
+            # self.sector_master.initialize()
 
-        # player ship
-        self.player_ship = PlayerShip((self.window.width/2, self.window.height/2))
-        EntityHandler.add(self.player_ship, ObjectCategory.PLAYER, True)
-        EntityHandler.player = self.player_ship
+            self.sector.pre_generate()
 
-        self.sector_master.current_sector.generate()
+            EntityHandler.initialize()
+            EntityHandler.bucket_init(self.sector.width, self.sector.height) # bucket_init after pregenerate before generate !
 
-        # setup quests
-        main_quest: QuestTracker = QuestTracker(self.sector_master.current_sector.main_quest)
-        main_quest.setup()
-        side_quest: QuestTracker = QuestTracker(self.sector_master.current_sector.side_quest)
-        side_quest.setup()
+            # player ship
+            self.player_ship = PlayerShip((2400, 2400)) # TODO hardcoded starting position
+            EntityHandler.add(self.player_ship, ObjectCategory.PLAYER, True)
+            EntityHandler.player = self.player_ship
 
-        # hud init
-        self.hud = HUD(main_quest, side_quest)
-        self.hud.init()
+            self.sector.generate()
 
-        # background
-        self.background = BackgroundDrawer()
-        self.background.init(self.player_ship, BiomeColorTheme[self.sector_master.current_sector.type])
+            # setup quests
+            main_quest: QuestTracker = QuestTracker(self.sector.main_quest)
+            main_quest.setup()
+            side_quest: QuestTracker = QuestTracker(self.sector.side_quest)
+            side_quest.setup()
 
-        # wall = TempWall()  # temporary
-        # wall.position = (600,500)  # temporary
-        # EntityHandler.update_barrier_list()
+            # hud init
+            self.hud = HUD(main_quest, side_quest)
+            self.hud.init()
+
+            # background
+            self.background = BackgroundDrawer()
+            self.background.init(self.player_ship, BiomeColorTheme[self.sector.type])
+
+            self.first_load = False
+        else:
+            PlayerStatistics.player_alive = True
+            # clear entity handler
+            EntityHandler.categorized = [arcade.SpriteList() for _ in ObjectCategory]
+            # generate sector
+            self.sector.pre_generate()
+
+            # recreate buckets
+            EntityHandler.bucket_init(self.sector.width, self.sector.height)  # bucket_init after pregenerate before generate !
+
+            # player ship
+            self.player_ship = PlayerShip((2400, 2400))  # TODO hardcoded starting position
+            EntityHandler.add(self.player_ship, ObjectCategory.PLAYER, True)
+            EntityHandler.player = self.player_ship
+
+            # self.sector.generate()
+            self.sector.generate()
+
+            # setup quests
+            main_quest: QuestTracker = QuestTracker(self.sector.main_quest)
+            main_quest.setup()
+            side_quest: QuestTracker = QuestTracker(self.sector.side_quest)
+            side_quest.setup()
+
+            # hud init
+            self.hud = HUD(main_quest, side_quest)
+            self.hud.init()
+
+            # background
+            self.background = BackgroundDrawer()
+            self.background.init(self.player_ship, BiomeColorTheme[self.sector.type])
+
 
     def on_update(self, delta_time: float) -> None:
         # arcade.print_timings() # TMP print fps timings
@@ -107,7 +141,7 @@ class GameView(View):
         self.center_camera_on_player(delta_time)
 
         if not PlayerStatistics.player_alive:
-            sector_type: biomes.Biome = self.sector_master.current_sector.type
+            sector_type: biomes.Biome = self.sector.type
             self.switch_view(DeathView(self.window, biomes.get_biome_color_theme(sector_type)))
             return
 
@@ -130,11 +164,11 @@ class GameView(View):
         # background
         self.background.process(delta_time)
         # check if main quest is done
-        if not self.exit_portal_spawned and self.sector_master.current_sector.main_quest.is_completed():
+        if not self.exit_portal_spawned and self.sector.main_quest.is_completed():
             exit_portal: ExitPortal = ExitPortal()
             pos: Optional[arcade.Point] = None
             while pos is None:
-                pos = self.sector_master.current_sector.find_empty_space(exit_portal.width, exit_portal.height, 1000)
+                pos = self.sector.find_empty_space(exit_portal.width, exit_portal.height, 1000)
             exit_portal.place(pos, ObjectCategory.FRIENDLY, bucketable=True)
             EventRegister.register_new(SpawnEvent(exit_portal.entities[0][0], pos))
             self.exit_portal_spawned = True

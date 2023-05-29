@@ -6,6 +6,7 @@ from src.game.main.gui.views.game_view import GameView
 from src.game.main.gui.views.view import View
 from src.game.main.sectors import biomes
 from src.game.main.sectors.sector import Sector
+from src.game.main.sectors.sector_master import SectorMaster
 from src.game.main.singletons.input_handler import InputHandler
 
 
@@ -16,10 +17,14 @@ class SectorMap(FadingView):
         super(SectorMap, self).__init__(window)
         self.manager: gui.UIManager = arcade.gui.UIManager()
         self.layout: gui.UIBoxLayout = None
+
+        self.sector_master: SectorMaster = SectorMaster()
+        self.sector_master.initialize()
+        self.sector_master.current_sector.pre_generate()
+
         if SectorMap.game is None:
-            SectorMap.game = GameView(self.window)
-            SectorMap.game.setup()
-        self.sector_map = SectorMap.game.sector_master.get_sector_map()
+            SectorMap.game = GameView(self.window, self.sector_master.current_sector)
+        self.sector_map = self.sector_master.get_sector_map()
         self.inspected_sector: Sector = None
         self.sector_info_text: gui.UITextArea = None
 
@@ -63,7 +68,9 @@ class SectorMap(FadingView):
             self.inspected_sector = sector
             self.sector_info_text.text = f"Sector type: {self.format_text(sector.type.name)}\n" \
                                          f"Sector size: {self.format_text(sector.size.name)}\n" \
-                                         f"Sector difficulty: {self.format_text(sector.difficulty.name)}"
+                                         f"Sector difficulty: {self.format_text(sector.difficulty.name)}"\
+                                         # f"Main quest: {self.format_text(sector.main_quest.get_progress_status_text())}"\
+                                         # f"Side quest: {self.format_text(sector.side_quest.get_progress_status_text())}"
 
         return on_click
 
@@ -71,6 +78,7 @@ class SectorMap(FadingView):
         return text.lower().capitalize().replace("_", " ")
 
     def on_click_start_button(self, event: gui.events.UIEvent) -> None:
+        SectorMap.game.setup()
         self.window.show_view(self.game)
 
     def on_update(self, delta_time: float) -> None:
