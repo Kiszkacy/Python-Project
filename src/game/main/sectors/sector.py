@@ -127,7 +127,7 @@ class Sector:
     def find_empty_space(self, width, height, max_tries=20,
                          categories: List[ObjectCategory] = (ObjectCategory.ENEMIES, ObjectCategory.STATIC, ObjectCategory.PLAYER, ObjectCategory.NEUTRAL)) -> Optional[arcade.Point]:
         """
-        finds empty space on the map
+        Finds empty space on the map
         :param width: Width of the searched area
         :param height: Height of the searched area
         :param max_tries: Max amount of searches for the empty area

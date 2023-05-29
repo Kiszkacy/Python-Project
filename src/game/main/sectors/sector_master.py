@@ -9,22 +9,29 @@ from numpy.random import PCG64
 
 from src.game.main.enums.difficulty import Difficulty
 from src.game.main.enums.sector_size import SectorSize
+
+from src.game.main.events.event import Event
+from src.game.main.events.event_observer import Observer
 from src.game.main.sectors.sector import Sector
 import src.game.main.sectors.biomes as biomes
-
+from src.game.main.singletons.event_register import EventRegister
+from src.game.main.singletons.game_save import GameSave
 
 Coordinate = namedtuple("Coordinate", ["x", "y"])
 
+
 class Node:
     rd = random.Random()
+    seed: int = 69
+
     def __init__(self, parents: list[Node] = None, children: list[Node] = None):
         self._hash = Node.rd.randint(-10 ** 10, 10 ** 10)
         self.parents: list[Node] = parents if parents is not None else []
         self.children: list[Node] = children if children is not None else []
         # TODO temporary
         biome: biomes.Biome = Node.rd.choices(tuple(biomes.Biome), k=1)[0]
-        self.sector: Sector = Sector(Node.rd.choices(tuple(Difficulty), k=1)[0], biomes.get_biome_chunks(biome),
-                                     size=Node.rd.choices(tuple(SectorSize), k=1)[0], biome_type=biome, aspect_ratio=1, seed=11)
+        self.sector: Sector = Sector(Difficulty.EASY, biomes.get_biome_chunks(biome),
+                                     size=Node.rd.choices(tuple(SectorSize), k=1)[0], biome_type=biome, aspect_ratio=1, seed=Node.seed)
 
     def add_child(self, child: Node):
         child.parents.append(self)
@@ -54,12 +61,16 @@ class Node:
         return self._hash
 
 
-class SectorMaster:
+class SectorMaster(Observer):
 
-    def __init__(self):
+    def __init__(self, seed: int):
         self.sector_map = None
         self.sector_dag = None
         self.current_sector: Sector = None
+        self.current_sector_node: Node = None
+        self.seed: int = seed
+        Node.rd = random.Random(seed)
+        Node.seed = seed
 
     def create_dag(self, max_depth=8, max_width=4, avg_connections=3):
         levels = [
@@ -72,7 +83,7 @@ class SectorMaster:
             levels[-1] = [Node()]
 
         normal = NormalDist(avg_connections, max_width - avg_connections)
-        generator = np.random.Generator(PCG64())
+        generator = np.random.Generator(PCG64(self.seed))
         for i, level in enumerate(levels[:-1]):
             print(f"Level len: {len(level)}")
             for node in level:
@@ -90,6 +101,7 @@ class SectorMaster:
         self.sector_dag = self.create_dag(max_depth, max_width, avg_connections)
         self.current_sector = self.sector_dag.sector
         self.sector_map = self.get_sector_map()
+        EventRegister.add_observer(self)
 
     def get_sector_map(self):
         if self.sector_dag is None:
@@ -153,3 +165,9 @@ class SectorMaster:
             return sum_of_x_cords/len(node.parents)
         else:
             return 0
+
+    def notify(self, event: Event) -> None:
+        from src.game.main.events.entering_sector_event import SectorCompleted
+        match event:
+            case SectorCompleted():
+                GameSave.stats["finished_sectors"].append(event.sector_node)

@@ -7,6 +7,7 @@ from src.game.main.gui.views.view import View
 from src.game.main.sectors import biomes
 from src.game.main.sectors.sector import Sector
 from src.game.main.sectors.sector_master import SectorMaster
+from src.game.main.singletons.game_save import GameSave
 from src.game.main.singletons.input_handler import InputHandler
 
 
@@ -18,7 +19,9 @@ class SectorMap(FadingView):
         self.manager: gui.UIManager = arcade.gui.UIManager()
         self.layout: gui.UIBoxLayout = None
 
-        self.sector_master: SectorMaster = SectorMaster()
+        GameSave.innit()
+        GameSave.save()
+        self.sector_master = SectorMaster(GameSave.stats["seed"])
         self.sector_master.initialize()
         self.sector_master.current_sector.pre_generate()
 

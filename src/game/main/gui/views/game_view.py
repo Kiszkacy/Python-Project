@@ -16,14 +16,12 @@ from src.game.main.sectors import biomes
 from src.game.main.sectors.sector import Sector
 from src.game.main.sectors.sector_master import SectorMaster
 from src.game.main.gui.views.pause import Pause
-from src.game.main.singletons.debug.console import Console
-from src.game.main.singletons.debug.debug_critical import DebugCritical
 from src.game.main.singletons.entity_handler import EntityHandler
 from src.game.main.singletons.event_register import EventRegister
+from src.game.main.singletons.game_save import GameSave
 from src.game.main.singletons.input_handler import InputHandler
 from src.game.main.particles.particles_handler import ParticlesHandler
 from src.game.main.singletons.player_statistics import PlayerStatistics
-from src.game.main.tempclasses.temp_wall import TempWall
 from src.game.main.vfx.background_drawer import BackgroundDrawer
 from src.game.main.sectors.biomes import BiomeColorTheme
 from src.game.main.entities.formations.exit_portal import ExitPortal
@@ -44,6 +42,7 @@ class GameView(View):
         self.sector: Sector = sector
         self.particle_handler: ParticlesHandler = None
         self.exit_portal_spawned: bool = False
+        self.exit_portal: ExitPortal = None
         self.first_load: bool = True
 
     def on_show_view(self):
@@ -63,7 +62,7 @@ class GameView(View):
             PlayerStatistics.init()
             arcade.enable_timings(120) # TMP enable fps timings
             # initializing is only necessary if we check for collisions before drawing anything
-
+            GameSave.innit()
             # generating sector map
             # self.sector_master: SectorMaster = SectorMaster()
             # self.sector_master.initialize()
@@ -147,6 +146,9 @@ class GameView(View):
 
         if InputHandler.key_binding_pressed("PAUSE"):
             self.switch_view(Pause(self, self.window))
+
+        if self.exit_portal is not None:
+            print(self.exit_portal.entities[0][0])
         # debug update
         # if InputHandler.key_binding_pressed("CONSOLE"):
         #     Console.draw_console_box = not Console.draw_console_box
@@ -171,6 +173,7 @@ class GameView(View):
                 pos = self.sector.find_empty_space(exit_portal.width, exit_portal.height, 1000)
             exit_portal.place(pos, ObjectCategory.FRIENDLY, bucketable=True)
             EventRegister.register_new(SpawnEvent(exit_portal.entities[0][0], pos))
+            self.exit_portal = exit_portal
             self.exit_portal_spawned = True
 
     def on_draw(self) -> None:
