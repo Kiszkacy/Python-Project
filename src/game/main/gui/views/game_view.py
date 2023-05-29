@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from time import sleep
 from typing import Tuple
 import arcade
 
@@ -93,7 +94,7 @@ class GameView(View):
         # EntityHandler.update_barrier_list()
 
     def on_update(self, delta_time: float) -> None:
-        arcade.print_timings() # TMP print fps timings
+        # arcade.print_timings() # TMP print fps timings
         # can update in custom order
         for category in ObjectCategory:
             # EntityHandler.update(delta_time, category) # update everything in that list

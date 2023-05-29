@@ -1,12 +1,14 @@
 import math
 import random
 
+import arcade
 import matplotlib
 import numpy as np
 import noise
 import seaborn as sns
 from matplotlib import pyplot as plt
 
+from src.game.main.enums.object_category import ObjectCategory
 from src.game.main.quests.quest import Quest
 from src.game.main.quests.quest_mapping import QuestConstructor, MainQuests, SideQuests
 from src.game.main.sectors import chunk, biomes
@@ -97,3 +99,27 @@ class Sector:
         ax: matplotlib.axes.Axes = sns.heatmap(self.grid, annot=True)
         ax.invert_yaxis()
         plt.show()
+
+    def find_empty_space(self, width, height, max_tries=20,
+                         categories: list[ObjectCategory] = (ObjectCategory.ENEMIES, ObjectCategory.STATIC, ObjectCategory.PLAYER, ObjectCategory.NEUTRAL)):
+        """
+        finds empty space on the map
+        :param width: Width of the searched area
+        :param height: Height of the searched area
+        :param max_tries: Max amount of searches for the empty area
+        :param categories: Categories of witch objects area should be empty
+        :return: Coordinates of the center of rectangle found or empty tuple
+        """
+        dummy_sprite = arcade.Sprite(texture=arcade.Texture.create_filled("dummy texture", (width, height), (0,0,0,0)))
+        chunk_size = Config.Constants["CHUNK_SIZE"]
+
+        for _ in range(max_tries):
+            position = (random.randint(0, self.width*chunk_size), random.randint(0, self.height*chunk_size))
+            dummy_sprite.set_position(*position)
+
+            for category in categories:
+                if len(dummy_sprite.collides_with_list(EntityHandler.categorized[category])) != 0:
+                    break
+            else:   # no collision detected
+                return position
+        return ()   # no empty space

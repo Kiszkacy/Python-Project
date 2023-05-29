@@ -2,7 +2,7 @@ from enum import IntEnum, auto
 
 
 class SectorSize(IntEnum):
-    SMALL = 200  # size is expressed in chunks
+    SMALL = 10  # size is expressed in chunks
     MEDIUM = 500
     BIG = 1000
     HUGE = 2000
