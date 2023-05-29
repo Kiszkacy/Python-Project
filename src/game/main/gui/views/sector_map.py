@@ -24,15 +24,13 @@ class SectorMap(FadingView):
         self.sector_info_text: gui.UITextArea = None
 
     def setup(self) -> None:
-        if SectorMap.game is None:
-            SectorMap.game = GameView(self.window)
 
         self.manager.enable()
         self.layout = gui.UIBoxLayout()
 
         title = gui.UILabel(text="SECTOR MAP", text_color=arcade.color.BLACK, font_size=50)
-        self.layout.add(title)
-        map_box = gui.UIBoxLayout()
+        self.layout.add(gui.UIAnchorWidget(child=title, anchor_y="top", align_y=-100))
+        map_box = gui.UIBoxLayout(size_hint_max=400)
         self.layout.add(map_box)
         self.sector_info_text = gui.UITextArea(text="Select sector to see information", font_size=12, width=400, height=100)
         # self.sector_info_text.fit_content()
@@ -41,7 +39,7 @@ class SectorMap(FadingView):
             button_colour = biomes.get_biome_color_theme(node.sector.type)
             button = gui.UITextureButton(texture=arcade.make_circle_texture(30, button_colour))
             button.on_click = self.get_sector_info_fun(node.sector)
-            map_box.add(gui.UIAnchorWidget(child=button, align_x=coordinates.x * 30, align_y=coordinates.y * 30 + 100))
+            map_box.add(gui.UIAnchorWidget(child=button, align_x=coordinates.x * 30, align_y=coordinates.y * 30 + 80))
 
         self.layout.add(gui.UITextArea(text="Sector Info", font_size=24))
         vbox = gui.UIBoxLayout(vertical=False)
