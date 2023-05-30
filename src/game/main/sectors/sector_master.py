@@ -67,7 +67,7 @@ class SectorMaster(Observer):
         self.sector_map = None
         self.sector_dag = None
         self.current_sector: Sector = None
-        self.current_sector_node: Node = None
+        self.__current_sector_node: Node = None
         self.seed: int = seed
         Node.rd = random.Random(seed)
         Node.seed = seed
@@ -99,7 +99,7 @@ class SectorMaster(Observer):
 
     def initialize(self, max_depth=8, max_width=4, avg_connections=3):
         self.sector_dag = self.create_dag(max_depth, max_width, avg_connections)
-        self.current_sector = self.sector_dag.sector
+        self.current_sector_node = self.sector_dag
         self.sector_map = self.get_sector_map()
         EventRegister.add_observer(self)
 
@@ -171,3 +171,16 @@ class SectorMaster(Observer):
         match event:
             case SectorCompleted():
                 GameSave.stats["finished_sectors"].append(event.sector_node)
+
+
+    @property
+    def current_sector_node(self):
+        return self.__current_sector_node
+
+    @current_sector_node.setter
+    def current_sector_node(self, value: Node):
+        if value is not None:
+            self.__current_sector_node = value
+            self.current_sector = value.sector
+        else:
+            self.__current_sector_node = value

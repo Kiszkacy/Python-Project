@@ -10,6 +10,7 @@ from src.game.main.enums.object_category import ObjectCategory
 from src.game.main.events.spawn_event import SpawnEvent
 from src.game.main.gui.ingame.hud import HUD
 from src.game.main.gui.views.death_view import DeathView
+from src.game.main.gui.views.sector_map import SectorMap
 from src.game.main.gui.views.view import View
 from src.game.main.quests.quest_tracker import QuestTracker
 from src.game.main.sectors import biomes
@@ -147,8 +148,10 @@ class GameView(View):
         if InputHandler.key_binding_pressed("PAUSE"):
             self.switch_view(Pause(self, self.window))
 
-        if self.exit_portal is not None:
-            print(self.exit_portal.entities[0][0])
+        # exiting sector
+        if self.exit_portal is not None and self.exit_portal_spawned and self.exit_portal.entities[0][0].used:
+            self.switch_view(SectorMap(self.window))
+
         # debug update
         # if InputHandler.key_binding_pressed("CONSOLE"):
         #     Console.draw_console_box = not Console.draw_console_box

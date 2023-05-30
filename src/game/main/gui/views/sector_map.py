@@ -6,7 +6,7 @@ from src.game.main.gui.views.game_view import GameView
 from src.game.main.gui.views.view import View
 from src.game.main.sectors import biomes
 from src.game.main.sectors.sector import Sector
-from src.game.main.sectors.sector_master import SectorMaster
+from src.game.main.sectors.sector_master import SectorMaster, Node
 from src.game.main.singletons.game_save import GameSave
 from src.game.main.singletons.input_handler import InputHandler
 
@@ -23,12 +23,11 @@ class SectorMap(FadingView):
         GameSave.save()
         self.sector_master = SectorMaster(GameSave.stats["seed"])
         self.sector_master.initialize()
-        self.sector_master.current_sector.pre_generate()
 
         if SectorMap.game is None:
             SectorMap.game = GameView(self.window, self.sector_master.current_sector)
         self.sector_map = self.sector_master.get_sector_map()
-        self.inspected_sector: Sector = None
+        self.inspected_sector_node: Node = None
         self.sector_info_text: gui.UITextArea = None
 
     def setup(self) -> None:
@@ -41,12 +40,11 @@ class SectorMap(FadingView):
         map_box = gui.UIBoxLayout(size_hint_max=400)
         self.layout.add(map_box)
         self.sector_info_text = gui.UITextArea(text="Select sector to see information", font_size=12, width=400, height=100)
-        # self.sector_info_text.fit_content()
 
         for node, coordinates in self.sector_map.items():
             button_colour = biomes.get_biome_color_theme(node.sector.type)
             button = gui.UITextureButton(texture=arcade.make_circle_texture(30, button_colour))
-            button.on_click = self.get_sector_info_fun(node.sector)
+            button.on_click = self.get_sector_info_fun(node)
             map_box.add(gui.UIAnchorWidget(child=button, align_x=coordinates.x * 30, align_y=coordinates.y * 30 + 80))
 
         self.layout.add(gui.UITextArea(text="Sector Info", font_size=24))
@@ -66,23 +64,23 @@ class SectorMap(FadingView):
                 child=self.layout)
         )
 
-    def get_sector_info_fun(self, sector: Sector):
+    def get_sector_info_fun(self, node: Node):
         def on_click(event: gui.events.UIEvent) -> None:
-            self.inspected_sector = sector
-            self.sector_info_text.text = f"Sector type: {self.format_text(sector.type.name)}\n" \
-                                         f"Sector size: {self.format_text(sector.size.name)}\n" \
-                                         f"Sector difficulty: {self.format_text(sector.difficulty.name)}"\
-                                         # f"Main quest: {self.format_text(sector.main_quest.get_progress_status_text())}"\
-                                         # f"Side quest: {self.format_text(sector.side_quest.get_progress_status_text())}"
-
+            self.inspected_sector_node = node
+            self.sector_info_text.text = f"Sector type: {self.format_text(node.sector.type.name)}\n" \
+                                         f"Sector size: {self.format_text(node.sector.size.name)}\n" \
+                                         f"Sector difficulty: {self.format_text(node.sector.difficulty.name)}"
         return on_click
 
     def format_text(self, text: str):
         return text.lower().capitalize().replace("_", " ")
 
     def on_click_start_button(self, event: gui.events.UIEvent) -> None:
-        SectorMap.game.setup()
-        self.window.show_view(self.game)
+        self.sector_master.current_sector_node = self.inspected_sector_node
+        self.game.sector = self.inspected_sector_node.sector
+        # SectorMap.game.setup()
+        # self.window.show_view(self.game)
+        self.switch_view(self.game)
 
     def on_update(self, delta_time: float) -> None:
         super(SectorMap, self).on_update(delta_time)
