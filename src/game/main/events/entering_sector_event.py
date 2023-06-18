@@ -9,5 +9,6 @@ from src.game.main.sectors.sector_master import Node
 class SectorCompleted(Event):
     pass
 
+
 if __name__ == '__main__':
     pass

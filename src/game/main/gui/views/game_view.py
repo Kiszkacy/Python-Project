@@ -10,7 +10,6 @@ from src.game.main.enums.object_category import ObjectCategory
 from src.game.main.events.spawn_event import SpawnEvent
 from src.game.main.gui.ingame.hud import HUD
 from src.game.main.gui.views.death_view import DeathView
-from src.game.main.gui.views.sector_map import SectorMap
 from src.game.main.gui.views.view import View
 from src.game.main.quests.quest_tracker import QuestTracker
 from src.game.main.sectors import biomes
@@ -97,6 +96,9 @@ class GameView(View):
             self.first_load = False
         else:
             PlayerStatistics.player_alive = True
+            # clear portal things
+            self.exit_portal_spawned = False
+            self.exit_portal = None
             # clear entity handler
             EntityHandler.categorized = [arcade.SpriteList() for _ in ObjectCategory]
             # generate sector
@@ -150,6 +152,8 @@ class GameView(View):
 
         # exiting sector
         if self.exit_portal is not None and self.exit_portal_spawned and self.exit_portal.entities[0][0].used:
+            print("Exit portal and things", self.exit_portal_spawned, self.sector.main_quest.is_completed())
+            from src.game.main.gui.views.sector_map import SectorMap
             self.switch_view(SectorMap(self.window))
 
         # debug update

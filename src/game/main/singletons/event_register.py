@@ -25,7 +25,8 @@ class EventRegister(metaclass=Singleton):
 
     @staticmethod
     def add_observer(observer: Observer) -> bool:
-        EventRegister.observers.append(observer) # TODO check if not a duplicate
+        if observer not in EventRegister.observers:
+            EventRegister.observers.append(observer) # TODO check if not a duplicate
         return True
 
 

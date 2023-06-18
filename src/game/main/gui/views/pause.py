@@ -54,7 +54,7 @@ class Pause(FadingView):
         self.window.show_view(self.game)
 
     def on_click_settings_button(self, event: gui.events.UIEvent) -> None:
-        sector_type: biomes.Biome = self.game.sector_master.current_sector.type
+        sector_type: biomes.Biome = self.game.sector.type
         background_colour: tuple[int, int, int] = biomes.get_biome_color_theme(sector_type)
         self.switch_view(Settings(self.window, self, background_colour))
 
@@ -71,7 +71,7 @@ class Pause(FadingView):
             self.window.show_view(self.game)
 
     def on_show_view(self):
-        sector_type: biomes.Biome = self.game.sector_master.current_sector.type
+        sector_type: biomes.Biome = self.game.sector.type
         arcade.set_background_color(biomes.get_biome_color_theme(sector_type))
 
     def on_draw(self) -> None:

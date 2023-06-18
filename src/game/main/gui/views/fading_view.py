@@ -20,14 +20,18 @@ class FadingView(View):
         self.draw_fading()
 
     def switch_view(self, to: View) -> None:
+        print(f"Fade out value:{self.fade_out}")
         self.next_view = to
         if self.fade_out is None: self.fade_out = 0 # this controls when view will be switched
 
     def update_fade(self) -> None:
         if self.fade_out is not None:
+            print("Update fade? not None")
             self.fade_out += self.fade_rate
             if self.fade_out is not None and self.fade_out > 255 and self.next_view is not None:
+                print("Set up?")
                 self.next_view.setup()
+                print("Set up")
                 self.window.show_view(self.next_view)
 
         if self.fade_in is not None:

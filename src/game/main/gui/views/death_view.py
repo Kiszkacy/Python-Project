@@ -35,7 +35,8 @@ class DeathView(FadingView):
 
         # create buttons
         for stats_name, stats_value in PlayerStatistics.stats.items():
-            left_box.add(gui.UILabel(text=stats_name, text_color=arcade.color.BLACK, font_size=20))
+            stats_representation = stats_name.capitalize().replace("_", " ")
+            left_box.add(gui.UILabel(text=stats_representation, text_color=arcade.color.BLACK, font_size=20))
             right_box.add(gui.UILabel(text=str(stats_value), text_color=arcade.color.BLACK, font_size=20))
 
         # button = gui.UIFlatButton(text="Settings", width=350)
@@ -44,7 +45,7 @@ class DeathView(FadingView):
         v_box = gui.UIBoxLayout(vertical=False, space_between=20)
         self.layout.add(v_box)
 
-        button: gui.UIFlatButton = gui.UIFlatButton(text="Try again", width=350, height=40)
+        button: gui.UIFlatButton = gui.UIFlatButton(text="Try again", width=350)
         v_box.add(button.with_space_around(bottom=40))
         button.on_click = self.on_click_continue_button
 

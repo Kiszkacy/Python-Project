@@ -16,8 +16,9 @@ class Portal(Entity):
         self.used = False
 
     def on_update(self, delta_time: float = 1 / 60) -> None:
-        if arcade.get_distance(self.player_ship.position[0], self.player_ship.position[1], self.position[0], self.position[1]) < 400.0: # TODO hardcoded
+        if arcade.get_distance(self.player_ship.position[0], self.player_ship.position[1], self.position[0], self.position[1]) < 200.0: # TODO hardcoded
             EventRegister.register_new(SectorCompleted())
+            print("registering event")
             self.used = True
 
 

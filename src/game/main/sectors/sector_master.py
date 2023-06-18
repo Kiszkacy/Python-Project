@@ -64,15 +64,14 @@ class Node:
 class SectorMaster(Observer):
 
     def __init__(self, seed: int):
-        self.sector_map = None
-        self.sector_dag = None
-        self.current_sector: Sector = None
+        self.sector_map: dict[Node, Coordinate]|None = None
+        self.sector_dag: Node|None = None
         self.__current_sector_node: Node = None
         self.seed: int = seed
         Node.rd = random.Random(seed)
         Node.seed = seed
 
-    def create_dag(self, max_depth=8, max_width=4, avg_connections=3):
+    def create_dag(self, max_depth=8, max_width=4, avg_connections=3) -> Node:
         levels = [
             [Node() for _ in range(max((math.ceil(max_width/max(abs(depth - max_depth/2),1))), 1))]
             for depth in range(max_depth)]
@@ -87,7 +86,7 @@ class SectorMaster(Observer):
         for i, level in enumerate(levels[:-1]):
             print(f"Level len: {len(level)}")
             for node in level:
-                connections = round(normal.samples(1)[0])
+                connections = round(normal.samples(1, seed=self.seed)[0])
                 connections = min(connections, len(levels[i + 1])) if connections > 0 else math.ceil(
                     len(levels[i + 1]) / 2)
                 node.add_children(generator.choice(levels[i + 1], replace=True, size=connections))
@@ -103,7 +102,7 @@ class SectorMaster(Observer):
         self.sector_map = self.get_sector_map()
         EventRegister.add_observer(self)
 
-    def get_sector_map(self):
+    def get_sector_map(self) -> dict[Node, Coordinate]:
         if self.sector_dag is None:
             return None
         if self.sector_map is not None:
@@ -155,7 +154,6 @@ class SectorMaster(Observer):
         self.sector_map = sector_map
         return sector_map
 
-
     def _get_average_parent_x(self, node: Node, sector_map: dict[Node, Coordinate]):
         if node.parents:
             sum_of_x_cords = 0
@@ -170,17 +168,28 @@ class SectorMaster(Observer):
         from src.game.main.events.entering_sector_event import SectorCompleted
         match event:
             case SectorCompleted():
-                GameSave.stats["finished_sectors"].append(event.sector_node)
+                print("Sector master: Finishd sector")
+                print(f"Before: {GameSave.stats}")
+                GameSave.stats["finished_sectors"].append(self.current_sector_node.__hash__())
+                print(f"After: {GameSave.stats}")
 
 
     @property
-    def current_sector_node(self):
+    def current_sector_node(self) -> Node:
         return self.__current_sector_node
 
     @current_sector_node.setter
     def current_sector_node(self, value: Node):
         if value is not None:
             self.__current_sector_node = value
-            self.current_sector = value.sector
         else:
             self.__current_sector_node = value
+
+    @property
+    def current_sector(self) -> Sector:
+        return self.current_sector_node.sector
+
+    def get_sector_node_by_hash(self, node_hash: int) -> Node | None:
+        for elem in self.sector_map.keys():
+            if elem.__hash__() == node_hash:
+                return elem
