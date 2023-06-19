@@ -7,6 +7,7 @@ from src.game.main.enums.input_mode import InputMode
 from src.game.main.enums.object_category import ObjectCategory
 from src.game.main.inventory.harvester import Harvester
 from src.game.main.inventory.inventory import Inventory
+from src.game.main.inventory.ship_storage import ShipStorage
 from src.game.main.singletons.config import Config
 from src.game.main.singletons.entity_handler import EntityHandler
 from src.game.main.singletons.input_handler import InputHandler
@@ -23,18 +24,16 @@ from src.game.main.weapons.weird.weird import WeaponWeird
 
 class PlayerShip(Ship):
 
-    def __init__(self, starting_position: arcade.Point) -> None:
+    def __init__(self) -> None:
         super().__init__(sprite_url=get_absolute_resource_path("\\sprites\\ships\\big_001.png"),
                          mass=50.0,
                          weapons=[WeaponFlamethrower(), WeaponShotgun(), WeaponSniper(), WeaponSinus(), WeaponWeird()],
                          weapon_count=5,
                          belongs_to=ObjectCategory.PLAYER,
                          collides_with=[ObjectCategory.STATIC, ObjectCategory.ENEMIES, ObjectCategory.PROJECTILES, ObjectCategory.NEUTRAL])
-        self.position = starting_position
         self.dashes_max: int = Config.Constants.get("DASHES_MAX")
         self.dashes: int = self.dashes_max
-        self.inventory: Inventory = Inventory(200.0) # TODO hardcoded inventory space
-        self.harvester: Harvester = Harvester(self.inventory, 256.0, 48.0) # TODO hardcoded pickup range
+        self.storage: ShipStorage = ShipStorage(inventory_size=100.0)
         # SCRIPT VARS "PRIVATE"
         self.dash_timer: float = 0.0
         self.dash_timer_online: bool = False
@@ -48,10 +47,9 @@ class PlayerShip(Ship):
             self.dash_timer -= delta_time
             if self.dash_timer <= 0.0:
                 self.dash_regen()
-        # update harvester
-        self.harvester.on_update(delta_time)
-        self.harvester.update_position(self.position)
-
+        # update storage
+        self.storage.on_update(delta_time)
+        self.storage.position = self.position
 
     def process_input(self, delta: float) -> None:
         if InputHandler.mode is not InputMode.INGAME: return
@@ -77,6 +75,10 @@ class PlayerShip(Ship):
                 self.dash(left=True)
             elif InputHandler.key_binding_held("DASH_RIGHT"):
                 self.dash(left=False)
+        if InputHandler.key_binding_pressed("EJECT_ALL"):
+            self.storage.drop_all_items()
+        if InputHandler.key_binding_pressed("EJECT_TRASH"):
+            self.storage.drop_trash()
 
     def fly(self, delta: float) -> None:
         direction: arcade.Vector = (np.cos(np.deg2rad(self.angle)), np.sin(np.deg2rad(self.angle))) # already normalized

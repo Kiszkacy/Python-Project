@@ -13,6 +13,7 @@ class Inventory:
 
 
     def append(self, item: Item, count: int = 1) -> bool:
+        print(self.capacity, self.max_capacity)
         if get_item_size(item) and get_item_size(item)*count + self.capacity <= self.max_capacity:
             self.items[item] = self.items.get(item, 0) + count
             self.capacity += get_item_size(item)*count
@@ -37,14 +38,14 @@ class Inventory:
     def delete(self, item: Item, count: int = 1) -> bool:
         # if item not in eq or less than to delete
         if not self.items.get(item) or self.items.get(item) < count: return False
-        self.items.item = self.items.get(item) - count
+        self.items[item] = self.items.get(item) - count
         self.capacity -= get_item_size(item)*count
         return True
 
 
     def delete_from(self, items: List[Tuple[Item, int]]) -> bool:
         # TODO implement
-        raise RuntimeError("NOT IMPLEMENTED")
+        raise NotImplementedError()
         return True
 
 

@@ -1,6 +1,6 @@
 import math
 import random
-from typing import List, Optional
+from typing import List, Optional, Tuple
 
 import arcade
 import matplotlib
@@ -100,7 +100,6 @@ class Sector:
         EntityHandler.update_barrier_list(self.width, self.height)
 
         # place formations
-
         self.generate_formations()
 
         self.grid = grid.T
@@ -109,36 +108,37 @@ class Sector:
         plt.show()
 
     def generate_formations(self) -> None:
-        print("YEP")
         if one_in(2): pass # generate friendly trading station
         # generate item trade station
         # generate enemy station if quest needs it
         if self.main_quest.type_ == QuestType.DESTROY_STATION:
-            print("AHA")
             formation: RivalStation = RivalStation()
             pos: Optional[arcade.Point] = None
             # loops until valid position is found
             while pos is None:
-                pos = self.find_empty_space(formation.width, formation.height, 1000)
+                pos = self.find_empty_space(formation.width, formation.height, max_tries=1000,
+                                            offset=(formation.width, formation.height, formation.width, formation.height))
             formation.place(pos, ObjectCategory.ENEMIES, True)
             print(pos)
 
 
-    def find_empty_space(self, width, height, max_tries=20,
+    def find_empty_space(self, width: int, height: int, max_tries: int = 20, offset: Optional[Tuple[int, int, int, int]] = None,
                          categories: List[ObjectCategory] = (ObjectCategory.ENEMIES, ObjectCategory.STATIC, ObjectCategory.PLAYER, ObjectCategory.NEUTRAL)) -> Optional[arcade.Point]:
         """
         Finds empty space on the map
         :param width: Width of the searched area
         :param height: Height of the searched area
         :param max_tries: Max amount of searches for the empty area
+        :param offset: Minimal offset from sector boundaries to search in
         :param categories: Categories of witch objects area should be empty
         :return: Coordinates of the center of rectangle found or empty tuple
         """
-        dummy_sprite = arcade.Sprite(texture=arcade.Texture.create_filled("dummy texture", (width, height), (0,0,0,0)))
-        chunk_size = Config.Constants["CHUNK_SIZE"]
+        dummy_sprite: arcade.Sprite = arcade.Sprite(texture=arcade.Texture.create_filled("dummy texture", (width, height), (0,0,0,0)))
+        chunk_size: int = Config.Constants["CHUNK_SIZE"]
+        if offset is None: offset = (0, 0, 0, 0)
 
         for _ in range(max_tries):
-            position = (random.randint(0, self.width*chunk_size), random.randint(0, self.height*chunk_size))
+            position: arcade.Point = (random.randint(0+offset[0], self.width*chunk_size-offset[2]), random.randint(0+offset[1], self.height*chunk_size-offset[3]))
             dummy_sprite.set_position(*position)
 
             for category in categories:

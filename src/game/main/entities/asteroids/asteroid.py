@@ -4,8 +4,10 @@ import numpy as np
 
 from src.game.main.entities.object import Object
 from src.game.main.enums.object_category import ObjectCategory
+from src.game.main.events.destroy_event import DestroyEvent
 from src.game.main.interfaces.collidable import Collidable
 from src.game.main.interfaces.destroyable import Destroyable
+from src.game.main.singletons.event_register import EventRegister
 from src.game.main.util.math import magnitude
 
 
@@ -37,16 +39,6 @@ class Asteroid(Object):
             self.angle_dir: float = np.random.randint(0, 2) * 2 - 1 # -1 or 1
 
         return collisions
-
-    def damage(self, amount: float) -> float:
-        dealt: float = super(Asteroid, self).damage(amount)
-        if self.hp <= 0.0 and dealt != 0.0:
-            self.destroy()
-        return dealt
-
-    def destroy(self) -> Destroyable:
-        self.kill()
-        return self
 
 
 if __name__ == '__main__':

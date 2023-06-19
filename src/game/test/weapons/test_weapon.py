@@ -1,19 +1,27 @@
+from copy import deepcopy
 from typing import Optional
 
+import arcade
 import numpy as np
 import pytest
-import pytest_quickcheck
 
+from src.game.main.entities.entity import Entity
 from src.game.main.enums.object_category import ObjectCategory
+from src.game.main.interfaces.launchable import Launchable
 from src.game.main.singletons.entity_handler import EntityHandler
 from src.game.main.weapons.launchable_gun import LaunchableGun
 from src.game.main.weapons.weapon import Weapon
 
 
+class TestGun(LaunchableGun):
+    def register_launchable(self, instance: Launchable) -> None:
+        EntityHandler.add(instance, instance.belongs_to, False)
+
+
 @pytest.mark.randomize(ncalls=1)
 def test_fire():
     EntityHandler.categorized[ObjectCategory.PROJECTILES].clear()
-    gun: LaunchableGun = LaunchableGun()
+    gun: LaunchableGun = TestGun()
     weapon: Weapon = Weapon(gun)
 
     weapon.fire((0.0, 0.0), 0.0, np.inf)
@@ -24,8 +32,8 @@ def test_fire():
 @pytest.mark.randomize(ncalls=1)
 def test_altfire():
     EntityHandler.categorized[ObjectCategory.PROJECTILES].clear()
-    gun1: LaunchableGun = LaunchableGun()
-    gun2: LaunchableGun = LaunchableGun()
+    gun1: LaunchableGun = TestGun()
+    gun2: LaunchableGun = TestGun()
     weapon: Weapon = Weapon(gun1, gun2)
 
     weapon.altfire((0.0, 0.0), 0.0, np.inf)
@@ -36,9 +44,9 @@ def test_altfire():
 @pytest.mark.randomize(min_num=0.25, max_num=10.0, ncalls=5)
 def test_update(can_altfire: bool, shots_per_second1: float, shots_per_second2: float):
     updates_per_second: int = 60
-    gun1: LaunchableGun = LaunchableGun(shots_per_sec=shots_per_second1)
+    gun1: LaunchableGun = TestGun(shots_per_sec=shots_per_second1)
     gun2: Optional[LaunchableGun] = None
-    if can_altfire: gun2: LaunchableGun = LaunchableGun(shots_per_sec=shots_per_second2)
+    if can_altfire: gun2: LaunchableGun = TestGun(shots_per_sec=shots_per_second2)
     weapon: Weapon = Weapon(gun1, gun2)
     delta: float = 1 / updates_per_second
     frame_count: int = 0

@@ -5,16 +5,18 @@ from typing import Tuple, Optional
 import arcade
 
 from src.game.main.entities.player_ship import PlayerShip
+from src.game.main.entities.formations.minable_asteroid import MinableAsteroid
+from src.game.main.entities.formations.player_ship import PlayerSpawn
 from src.game.main.enums.input_mode import InputMode
 from src.game.main.enums.object_category import ObjectCategory
 from src.game.main.events.spawn_event import SpawnEvent
 from src.game.main.gui.ingame.hud import HUD
 from src.game.main.gui.views.death_view import DeathView
 from src.game.main.gui.views.view import View
+from src.game.main.quests.quest_gather_ore import QuestGatherOre
 from src.game.main.quests.quest_tracker import QuestTracker
 from src.game.main.sectors import biomes
 from src.game.main.sectors.sector import Sector
-from src.game.main.sectors.sector_master import SectorMaster
 from src.game.main.gui.views.pause import Pause
 from src.game.main.singletons.entity_handler import EntityHandler
 from src.game.main.singletons.event_register import EventRegister
@@ -25,7 +27,6 @@ from src.game.main.singletons.player_statistics import PlayerStatistics
 from src.game.main.vfx.background_drawer import BackgroundDrawer
 from src.game.main.sectors.biomes import BiomeColorTheme
 from src.game.main.entities.formations.exit_portal import ExitPortal
-
 
 
 class GameView(View):
@@ -67,15 +68,15 @@ class GameView(View):
             # self.sector_master: SectorMaster = SectorMaster()
             # self.sector_master.initialize()
 
+            # player ship
+            player_spawn: PlayerSpawn = PlayerSpawn()
+            self.player_ship = player_spawn.entities[0][0]
+            EntityHandler.player = self.player_ship
+
             self.sector.pre_generate()
 
             EntityHandler.initialize()
             EntityHandler.bucket_init(self.sector.width, self.sector.height) # bucket_init after pregenerate before generate !
-
-            # player ship
-            self.player_ship = PlayerShip((2400, 2400)) # TODO hardcoded starting position
-            EntityHandler.add(self.player_ship, ObjectCategory.PLAYER, True)
-            EntityHandler.player = self.player_ship
 
             self.sector.generate()
 
@@ -84,6 +85,23 @@ class GameView(View):
             main_quest.setup()
             side_quest: QuestTracker = QuestTracker(self.sector.side_quest)
             side_quest.setup()
+
+            # add some asteroids if mining quest
+            if isinstance(self.sector.side_quest, QuestGatherOre):  # TODO very ugly
+                for i in range(40):
+                    asteroid: MinableAsteroid = MinableAsteroid()
+                    pos = self.sector.find_empty_space(asteroid.width, asteroid.height, 10)
+                    if pos is None: continue
+                    asteroid.place(pos, ObjectCategory.NEUTRAL, bucketable=True)
+                    print("asteroid")
+
+            # spawn player
+            pos: Optional[arcade.Point] = None
+            while pos is None:
+                pos = self.sector.find_empty_space(player_spawn.width, player_spawn.height, 1000, offset=(5000, 5000, 5000, 5000)) # TODO constant
+            player_spawn.place(pos, ObjectCategory.PLAYER, bucketable=True)
+            self.player_ship = player_spawn.entities[0][0]
+            EntityHandler.player = self.player_ship
 
             # hud init
             self.hud = HUD(main_quest, side_quest)
@@ -101,18 +119,19 @@ class GameView(View):
             self.exit_portal = None
             # clear entity handler
             EntityHandler.categorized = [arcade.SpriteList() for _ in ObjectCategory]
-            # generate sector
+
+            # player ship
+            player_spawn: PlayerSpawn = PlayerSpawn()
+            self.player_ship = player_spawn.entities[0][0]
+            EntityHandler.player = self.player_ship
+
+            # sector pregenerate
             self.sector.pre_generate()
 
             # recreate buckets
-            EntityHandler.bucket_init(self.sector.width, self.sector.height)  # bucket_init after pregenerate before generate !
+            EntityHandler.bucket_init(self.sector.width, self.sector.height) # bucket_init after pregenerate before generate !
 
-            # player ship
-            self.player_ship = PlayerShip((2400, 2400))  # TODO hardcoded starting position
-            EntityHandler.add(self.player_ship, ObjectCategory.PLAYER, True)
-            EntityHandler.player = self.player_ship
-
-            # self.sector.generate()
+            # generate sector
             self.sector.generate()
 
             # setup quests
@@ -120,6 +139,23 @@ class GameView(View):
             main_quest.setup()
             side_quest: QuestTracker = QuestTracker(self.sector.side_quest)
             side_quest.setup()
+
+            # add some asteroids if mining quest
+            if isinstance(self.sector.side_quest, QuestGatherOre): # TODO very ugly
+                for i in range(40):
+                    asteroid: MinableAsteroid = MinableAsteroid()
+                    pos = self.sector.find_empty_space(asteroid.width, asteroid.height, 10)
+                    if pos is None: continue
+                    asteroid.place(pos, ObjectCategory.NEUTRAL, bucketable=True)
+                    print("asteroid")
+
+            # spawn player
+            pos: Optional[arcade.Point] = None
+            while pos is None:
+                pos = self.sector.find_empty_space(player_spawn.width, player_spawn.height, 1000, offset=(5000, 5000, 5000, 5000)) # TODO constant
+            player_spawn.place(pos, ObjectCategory.PLAYER, bucketable=True)
+            self.player_ship = player_spawn.entities[0][0]
+            EntityHandler.player = self.player_ship
 
             # hud init
             self.hud = HUD(main_quest, side_quest)
@@ -155,16 +191,6 @@ class GameView(View):
             print("Exit portal and things", self.exit_portal_spawned, self.sector.main_quest.is_completed())
             from src.game.main.gui.views.sector_map import SectorMap
             self.switch_view(SectorMap(self.window))
-
-        # debug update
-        # if InputHandler.key_binding_pressed("CONSOLE"):
-        #     Console.draw_console_box = not Console.draw_console_box
-        #     if Console.draw_console_box:    InputHandler.mode = InputMode.CONSOLE
-        #     else:                           InputHandler.mode = InputMode.INGAME
-        # if InputHandler.key_binding_pressed("DEBUG_PRINT"):
-        #     DebugCritical.print = not DebugCritical.print
-        # Console.on_update()
-        # DebugCritical.on_update(self.camera)
 
         # hud
         self.hud.process(delta_time)

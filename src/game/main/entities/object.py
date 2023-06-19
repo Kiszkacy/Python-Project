@@ -38,3 +38,6 @@ class Object(CollidableEntity, Damageable, Destroyable, Affectable):
         self.kill()
         EventRegister.register_new(DestroyEvent(self))
         return self
+
+    def out_of_bounds(self) -> None:
+        self.destroy()

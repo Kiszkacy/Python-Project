@@ -1,3 +1,4 @@
+from typing import Optional
 
 import arcade
 
@@ -14,9 +15,9 @@ class AsteroidSmall(Asteroid, Lootable):
 
     LOOT_TABLE: LootDrop = LootDropLoader.load_from_json(get_absolute_resource_path("\\loottables\\asteroids\\small.json"))
 
-    def __init__(self, starting_velocity: arcade.Vector, starting_position: arcade.Point) -> None:
+    def __init__(self, starting_velocity: arcade.Vector, starting_position: arcade.Point, minable: Optional[bool] = None) -> None:
         sprite_path = get_absolute_resource_path("\\sprites\\asteroids\\small.png")
-        self.minable: bool = one_in(3)
+        self.minable: bool = one_in(3) if minable is None else minable
         if self.minable: sprite_path = get_absolute_resource_path("\\sprites\\asteroids\\minable\\small.png")
         Asteroid.__init__(self, sprite_url=sprite_path,
                           hp_max=15.0, mass=30.0, starting_velocity=starting_velocity,

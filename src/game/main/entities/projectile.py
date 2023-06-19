@@ -54,13 +54,18 @@ class Projectile(Entity, Launchable, Collidable, Destroyable, Bucketable):
         # check collisions
         self.handle_collisions()
 
+    # TODO NOTE: code repetition with collidable !
     def update_bucket_position(self) -> None:
         bs: int = Config.Constants.get("BUCKET_SIZE")
         bucket_x: int = int(self.position[0] // bs)
         bucket_y: int = int(self.position[1] // bs)
         if bucket_x != self.bucket_x_idx or bucket_y != self.bucket_y_idx:
             self.remove_from_sprite_lists()
-            EntityHandler.add(self, self.belongs_to, True)
+            if not EntityHandler.add(self, self.belongs_to, True):  # was not added -> moved out of bounds
+                self.out_of_bounds()
+
+    def out_of_bounds(self) -> None:
+        self.kill()
 
     def movement_update(self, delta: float) -> None:
         # acceleration update

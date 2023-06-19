@@ -1,12 +1,11 @@
-from time import time, sleep
 
 import arcade
 import arcade.gui as gui
 
 from src.game.main.gui.views.fading_view import FadingView
+from src.game.main.gui.views.profile_view import Profile
 from src.game.main.gui.views.sector_map import SectorMap
 from src.game.main.gui.views.settings import Settings
-from src.game.main.gui.views.view import View
 
 
 class Menu(FadingView):
@@ -24,6 +23,10 @@ class Menu(FadingView):
         button: gui.UIFlatButton = gui.UIFlatButton(text="Start", width=350, height=100)
         self.layout.add(button.with_space_around(bottom=40))
         button.on_click = self.on_click_start_button
+
+        button = gui.UIFlatButton(text="Profile", width=350)
+        self.layout.add(button.with_space_around(bottom=40))
+        button.on_click = self.on_click_profile_button
 
         button = gui.UIFlatButton(text="Settings", width=350)
         self.layout.add(button.with_space_around(bottom=40))
@@ -47,6 +50,9 @@ class Menu(FadingView):
 
     def on_click_start_button(self, event: gui.events.UIEvent) -> None:
         self.switch_view(SectorMap(self.window))
+
+    def on_click_profile_button(self, event: gui.events.UIEvent) -> None:
+        self.switch_view(Profile(self.window))
 
     def on_click_settings_button(self, event: gui.events.UIEvent) -> None:
         self.switch_view(Settings(self.window, self, arcade.color.GRAY))

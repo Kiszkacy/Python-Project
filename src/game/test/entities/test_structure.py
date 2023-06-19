@@ -1,9 +1,9 @@
-import os
+from __future__ import annotations
 
 import pytest
-from pytest_quickcheck.generator import list_of
 
-from src.game.main.entities.entity import Entity
+from src.game.main.entities.player_ship import PlayerShip # TODO this crashes tests if removed ??? (cycled imports?)
+
 from src.game.main.entities.structure import Structure
 from src.game.main.enums.object_category import ObjectCategory
 from src.game.main.util.path_loader import get_absolute_resource_path

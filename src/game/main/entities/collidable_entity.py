@@ -37,7 +37,12 @@ class CollidableEntity(Entity, Collidable, Bucketable):
         bucket_y: int = int(self.position[1] // bs)
         if bucket_x != self.bucket_x_idx or bucket_y != self.bucket_y_idx:
             self.remove_from_sprite_lists()
-            EntityHandler.add(self, self.belongs_to, True)
+            if not EntityHandler.add(self, self.belongs_to, True): # was not added -> moved out of bounds
+                self.out_of_bounds()
+
+
+    def out_of_bounds(self) -> None:
+        self.kill()
 
 
     def handle_collisions(self, delta: float) -> List[Collidable]:

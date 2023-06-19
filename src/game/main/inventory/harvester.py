@@ -24,8 +24,7 @@ class Harvester(Entity):
         self.range: float = range
         self.pickup_range: float = pickup_range
         self.strength: float = strength
-        # init
-        # self.scale = self.range / 256.0 * 2.0 # * 2.0 because sprite is centered and radius would be halved
+        self.active: bool = True
 
     def on_update(self, delta_time: float = 1 / 60) -> None:
         self.look_for_items(delta_time)
@@ -35,8 +34,9 @@ class Harvester(Entity):
         self.position = position
 
     def look_for_items(self, delta: float) -> None:
+        if not self.active: return
         # NOTE: if everything works correctly we are 100% sure that colliders are of ItemEntity type
-        for obj in EntityHandler.categorized[ObjectCategory.ITEMS]:
+        for obj in EntityHandler.categorized[ObjectCategory.ITEMS]: # TODO change to buckets !!! VERY IMPORTANT
             item: ItemEntity = obj
             dist: float = arcade.get_distance_between_sprites(self, item)
             if dist <= self.pickup_range: # pickup item
@@ -50,25 +50,8 @@ class Harvester(Entity):
                 push: arcade.Point = (direction[0]*self.strength*delta, direction[1]*self.strength*delta)
                 obj.velocity = (push[0] + obj.velocity[0], push[1] + obj.velocity[1])
 
-
-    # def collision_resolution(self, delta: float, collisions: List[Collidable]) -> List[Collidable]:
-    #     # NOTE: if everything works correctly we are 100% sure that colliders are of ItemEntity type
-    #     for collider in collisions:
-    #         obj: ItemEntity = collider
-    #         dist: float = arcade.get_distance_between_sprites(self, obj)
-    #         if dist <= self.pickup_range: # pickup item
-    #             if self.inventory.append(obj.type, 1):
-    #                 EventRegister.register_new(PickupEvent(obj.type, self.inventory))
-    #                 obj.destroy()
-    #             print(self.inventory.items, f"{self.inventory.capacity}/{self.inventory.max_capacity}")
-    #         if dist <= self.range: # move item closer to itself
-    #             direction: arcade.Point = (self.position[0] - obj.position[0], self.position[1] - obj.position[1])
-    #             direction = normalize(direction)
-    #             push: arcade.Point = (direction[0]*self.strength*delta, direction[1]*self.strength*delta)
-    #             obj.velocity = (push[0] + obj.velocity[0], push[1] + obj.velocity[1])
-    #
-    #
-    #     return collisions
+    def set_active(self, to: bool) -> None:
+        self.active = to
 
 
 if __name__ == '__main__':

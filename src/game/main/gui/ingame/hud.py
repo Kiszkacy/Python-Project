@@ -5,12 +5,14 @@ import arcade
 from src.game.main.entities.player_ship import PlayerShip
 from src.game.main.enums.object_category import ObjectCategory
 from src.game.main.gui.ingame.hud_flash_screen import HUDFlashScreen
+from src.game.main.gui.ingame.hud_out_of_bounds_warning import HUDOutOfBounds
 from src.game.main.gui.ingame.hud_waypoint import HUDWaypoint
 from src.game.main.interfaces.processable import Processable
 from src.game.main.quests.quest_tracker import QuestTracker
 from src.game.main.quests.quest_type import QuestType
 from src.game.main.singletons.config import Config
 from src.game.main.singletons.entity_handler import EntityHandler
+from src.game.main.util.math import clamp
 
 
 class HUD(Processable):
@@ -22,6 +24,7 @@ class HUD(Processable):
         self.health_bar: list[arcade.SpriteSolidColor] = []
         self.shield_bar: list[arcade.SpriteSolidColor] = []
         self.power_bar: list[arcade.SpriteSolidColor] = []
+        self.inventory_bar: list[arcade.SpriteSolidColor] = []
         self.dash_bars: list[arcade.SpriteSolidColor] = []
         self.mission_objective: arcade.SpriteSolidColor = None
         self.main_quest_tracker: QuestTracker = main_quest
@@ -30,6 +33,7 @@ class HUD(Processable):
         self.side_quest_text: arcade.Text = None
         self.hud_flash_screen: HUDFlashScreen = HUDFlashScreen()
         self.hud_waypoint: HUDWaypoint = HUDWaypoint()
+        self.hud_out_of_bounds: HUDOutOfBounds = HUDOutOfBounds()
 
 
     def init(self) -> None:
@@ -43,6 +47,9 @@ class HUD(Processable):
         self.bar_init(320, 32, 8, (78, 203, 255, 192), (48, 48, 48, 192), (192, 192, 192, 192), (192, 48), self.shield_bar)
         self.bar_init(320, 32, 8, (161, 78, 255, 192), (48, 48, 48, 192), (192, 192, 192, 192),
                       (Config.Settings.get("SCREEN_WIDTH")//2, Config.Settings.get("SCREEN_HEIGHT")-48), self.power_bar)
+        # inventory bar
+        self.bar_init(160, 32, 8, (217, 137, 52, 192), (48, 48, 48, 192), (192, 192, 192, 192),
+                      (Config.Settings.get("SCREEN_WIDTH") - 112, 48), self.inventory_bar)
         # dash bars
         self.dash_bars_init()
         # mission windows
@@ -60,10 +67,10 @@ class HUD(Processable):
                                            color=(255, 255, 255), anchor_x="center", font_size=14)
         # waypoint
         self.hud_waypoint.init()
-
         # screen flash
         self.hud_flash_screen.init()
-
+        # out of bounds warning
+        self.hud_out_of_bounds.init()
 
     def bar_init(self, width: int, height: int, padding: int, color_front: Tuple[int, int, int] | Tuple[int, int, int, int],
                  color_back: Tuple[int, int, int] | Tuple[int, int, int, int], color_border: Tuple[int, int, int] | Tuple[int, int, int, int],
@@ -101,6 +108,10 @@ class HUD(Processable):
         left_anchor = self.power_bar[active_idx].left
         self.power_bar[active_idx].width = max((self.player_ship.power / self.player_ship.power_max) * (320-8), 1) # TODO tmp max fix
         self.power_bar[active_idx].left = left_anchor
+        # inventory bar
+        left_anchor = self.inventory_bar[active_idx].left
+        self.inventory_bar[active_idx].width = max((self.player_ship.storage.inventory.capacity / self.player_ship.storage.inventory.max_capacity) * (160 - 8), 1)  # TODO tmp max fix
+        self.inventory_bar[active_idx].left = left_anchor
         # dash bars
         for i in range(self.player_ship.dashes):
             self.dash_bars[i].color = (255, 255, 255)
@@ -113,11 +124,14 @@ class HUD(Processable):
         # update quest text
         self.main_quest_text.text = self.main_quest_tracker.quest.get_progress_status_text()
         self.side_quest_text.text = self.side_quest_tracker.quest.get_progress_status_text()
+        # out of bounds warning
+        self.hud_out_of_bounds.process(delta)
 
     def draw(self) -> None:
         EntityHandler.draw(ObjectCategory.HUD)
         self.main_quest_text.draw()
         self.side_quest_text.draw()
+        self.hud_out_of_bounds.draw()
 
 
 if __name__ == '__main__':
