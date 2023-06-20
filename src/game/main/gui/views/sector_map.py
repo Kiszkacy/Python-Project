@@ -75,10 +75,12 @@ class SectorMap(FadingView):
         def on_click(event: gui.events.UIEvent) -> None:
             self.inspected_sector_node = node
             sector_completed = node.__hash__() in GameSave.stats["finished_sectors"]
+            sector_unlocked = self.sector_master.is_sector_unlocked(node)
             print(f"Node hash: {node.__hash__()}, Finished: {GameSave.stats['finished_sectors']}")
             self.sector_info_text.text = f"Sector type: {self.format_text(node.sector.type.name)}\n" \
                                          f"Sector size: {self.format_text(node.sector.size.name)}\n" \
                                          f"Sector difficulty: {self.format_text(node.sector.difficulty.name)}\n" \
+                                         f"Unlocked: {self.format_text(str(sector_unlocked))}\n" \
                                          f"Completed: {self.format_text(str(sector_completed))}"
         return on_click
 
@@ -86,9 +88,10 @@ class SectorMap(FadingView):
         return text.lower().capitalize().replace("_", " ")
 
     def on_click_start_button(self, event: gui.events.UIEvent) -> None:
-        SectorMap.sector_master.current_sector_node = self.inspected_sector_node
-        SectorMap.game.sector = self.inspected_sector_node.sector
-        self.switch_view(SectorMap.game)
+        if self.sector_master.is_sector_unlocked(self.inspected_sector_node):
+            SectorMap.sector_master.current_sector_node = self.inspected_sector_node
+            SectorMap.game.sector = self.inspected_sector_node.sector
+            self.switch_view(SectorMap.game)
 
     def on_show_view(self):
         """ Called when switching to this view"""

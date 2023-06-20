@@ -1,5 +1,5 @@
 {
-    "COLLISION_FORCE": 2500.0,
+    "COLLISION_FORCE": 20.0,
     "WEAPONS_MAX": 5,
     "DASHES_MAX": 3,
     "DASH_CD": 3.5,

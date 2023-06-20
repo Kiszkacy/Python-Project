@@ -26,7 +26,7 @@ class AsteroidBig(Asteroid, Lootable):
         self.minable: bool = one_in(3) if minable is None else minable
         if self.minable: sprite_path = get_absolute_resource_path("\\sprites\\asteroids\\minable\\big.png")
         Asteroid.__init__(self, sprite_url=sprite_path,
-                          hp_max=100.0, mass=100.0, starting_velocity=starting_velocity, # TODO increase mass in the future
+                          hp_max=100.0, mass=300.0, starting_velocity=starting_velocity, # TODO increase mass in the future
                           starting_position=starting_position)
         if self.minable: self.color = (235,235,52)
 
