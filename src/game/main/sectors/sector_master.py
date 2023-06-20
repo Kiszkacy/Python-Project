@@ -15,7 +15,7 @@ from src.game.main.events.event_observer import Observer
 from src.game.main.sectors.sector import Sector
 import src.game.main.sectors.biomes as biomes
 from src.game.main.singletons.event_register import EventRegister
-from src.game.main.singletons.game_save import GameSave
+from src.game.main.save.game_save import GameSave
 
 Coordinate = namedtuple("Coordinate", ["x", "y"])
 

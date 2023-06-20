@@ -1,6 +1,6 @@
 
 from src.game.main.entities.formations.formation import Formation
-from src.game.main.entities.portal import Portal
+from src.game.main.entities.friendly.portal import Portal
 
 
 class ExitPortal(Formation):

@@ -61,23 +61,23 @@ class DeathView(FadingView):
                 child=self.layout)
         )
 
-        # ==============
-        # BUTTON METHODS
-        # ==============
+    # ==============
+    # BUTTON METHODS
+    # ==============
 
     # starts new game
     def on_click_continue_button(self, event: gui.events.UIEvent) -> None:
         from src.game.main.gui.views.sector_map import SectorMap
         self.switch_view(SectorMap(self.window))
 
-    def on_click_settings_button(self, event: gui.events.UIEvent) -> None:
-        self.switch_view(Settings(self.window, self, self.background_color))
+    # def on_click_settings_button(self, event: gui.events.UIEvent) -> None:
+    #     self.switch_view(Settings(self.window, self, self.background_color))
 
     def on_click_exit_button(self, event: gui.events.UIEvent) -> None:
         on_exit()
         arcade.exit()
 
-        # ==============
+    # ==============
 
     def on_update(self, delta_time: float) -> None:
         super(DeathView, self).on_update(delta_time)

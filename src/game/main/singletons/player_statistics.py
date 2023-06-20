@@ -1,4 +1,5 @@
 import json
+from typing import Dict
 
 from src.game.main.entities.enemies.enemy import Enemy
 from src.game.main.entities.player_ship import PlayerShip
@@ -13,24 +14,29 @@ from src.game.main.util.path_loader import get_absolute_resource_path
 
 class PlayerStatistics(Observer):
 
-    stats: dict = {}
+    stats: Dict = {}
     player_alive = True
 
     @staticmethod
     def init():
         try:
-            with open(get_absolute_resource_path("\\configs\\players_statistics.json"), "r") as f:
+            with open(get_absolute_resource_path("\\saves\\players_statistics.json"), "r") as f:
                 PlayerStatistics.stats = json.load(f)
                 PlayerStatistics.stats["kills_this_round"] = 0
         except IOError:
-            PlayerStatistics.stats = {"kills":0, "exp":0, "kills_this_round":0, "quests_completed":0}
+            PlayerStatistics.reset()
         finally:
             EventRegister.add_observer(PlayerStatistics())
 
     @staticmethod
     def save():
-        with open(get_absolute_resource_path("\\configs\\players_statistics.json"), "w") as f:
+        with open(get_absolute_resource_path("\\saves\\players_statistics.json"), "w") as f:
             json.dump(PlayerStatistics.stats, f)
+
+    @staticmethod
+    def reset() -> None:
+        PlayerStatistics.stats = {"kills": 0, "exp": 0, "kills_this_round": 0, "quests_completed": 0}
+        PlayerStatistics.save()
 
     def notify(self, event: Event) -> None:
         match event:

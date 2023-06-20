@@ -1,4 +1,4 @@
-from src.game.main.singletons.game_save import GameSave
+from src.game.main.save.game_save import GameSave
 from src.game.main.singletons.player_statistics import PlayerStatistics
 
 

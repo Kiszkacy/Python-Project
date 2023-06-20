@@ -7,7 +7,7 @@ from src.game.main.gui.views.view import View
 from src.game.main.sectors import biomes
 from src.game.main.sectors.sector import Sector
 from src.game.main.sectors.sector_master import SectorMaster, Node, Coordinate
-from src.game.main.singletons.game_save import GameSave
+from src.game.main.save.game_save import GameSave
 from src.game.main.singletons.input_handler import InputHandler
 from typing import Optional
 
@@ -22,7 +22,7 @@ class SectorMap(FadingView):
         self.manager: gui.UIManager = arcade.gui.UIManager()
         self.layout: gui.UIBoxLayout = None
 
-        GameSave.innit()
+        GameSave.init()
         GameSave.save()
         if SectorMap.sector_master is None:
             SectorMap.sector_master = SectorMaster(GameSave.stats["seed"])

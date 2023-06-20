@@ -11,11 +11,19 @@ class Profile(FadingView):
         super(Profile, self).__init__(window)
         self.manager: gui.UIManager = arcade.gui.UIManager()
         self.layout: gui.UIBoxLayout = None
+        self.level_text: gui.UILabel = None
 
 
     def setup(self) -> None:
         self.manager.enable()
         self.layout = gui.UIBoxLayout()
+
+        # level information
+        from src.game.main.singletons.player_statistics import PlayerStatistics
+        PlayerStatistics.init()
+        from src.game.main.level.progress_functions import calculate_level
+        level: gui.UILabel = gui.UILabel(text=f"LEVEL {calculate_level(PlayerStatistics.stats['exp'])}", text_color=arcade.color.BLACK, font_size=50)
+        self.layout.add(level)
 
         # create buttons
         button: gui.UIFlatButton = gui.UIFlatButton(text="Back", width=350, height=100)
@@ -24,7 +32,7 @@ class Profile(FadingView):
 
         button = gui.UIFlatButton(text="Reset", width=350)
         self.layout.add(button.with_space_around(bottom=40))
-        button.on_click = lambda x: x
+        button.on_click = self.on_reset_button
 
         # NOTE: i think this magical code automatically centers whole ui ?
         self.manager.add(
@@ -40,6 +48,10 @@ class Profile(FadingView):
 
     def on_back_button(self, event: gui.events.UIEvent) -> None:
         self.switch_view(_.Menu(self.window))
+
+    def on_reset_button(self, event: gui.events.UIEvent) -> None:
+        from src.game.main.singletons.player_statistics import PlayerStatistics
+        PlayerStatistics.reset()
 
     # ==============
 

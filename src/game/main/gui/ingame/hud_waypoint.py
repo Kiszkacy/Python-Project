@@ -1,12 +1,13 @@
 from typing import List, Optional
 
 import arcade
-import numpy as np
 
 from src.game.main.entities.enemies.station.station import EnemyStation
 from src.game.main.entities.entity import Entity
+from src.game.main.entities.formations.trade_station import TradeStation
+from src.game.main.entities.friendly.weapon_station import WeaponStation
 from src.game.main.entities.player_ship import PlayerShip
-from src.game.main.entities.portal import Portal
+from src.game.main.entities.friendly.portal import Portal
 from src.game.main.enums.object_category import ObjectCategory
 from src.game.main.events.destroy_event import DestroyEvent
 from src.game.main.events.event import Event
@@ -40,24 +41,24 @@ class HUDWaypoint(Observer, Processable):
             if isinstance(e, EnemyStation):
                 enemy_station_idx = idx
                 break
-        print("aaaaaaaaaa")
         if enemy_station_idx is not None:
-            print("not aaaaaaa")
             self.waypoints.append(EntityHandler.categorized[ObjectCategory.ENEMIES][enemy_station_idx])
             self.waypoints_markers.append(arcade.Sprite(texture=arcade.make_circle_texture(32, (230, 123, 100, 32))))
             EntityHandler.add(self.waypoints_markers[-1], ObjectCategory.HUD)
 
-        # TODO friendly station
-        # enemy_station_idx: Optional[int] = None
-        # for idx, e in enumerate(EntityHandler.categorized[ObjectCategory.ENEMIES]):
-        #     if isinstance(e, EnemyStation):
-        #         enemy_station_idx = idx
-        #         break
-        # if enemy_station_idx is not None:
-        #     self.waypoints.append(EntityHandler.categorized[ObjectCategory.ENEMIES][enemy_station_idx])
-        #     self.waypoints_markers.append(arcade.SpriteSolidColor(32, 32, (230, 123, 100, 128)))
+        # friendly station
+        friendly_station_idx: Optional[int] = None
+        for idx, e in enumerate(EntityHandler.categorized[ObjectCategory.FRIENDLY]):
+            if isinstance(e, WeaponStation):
+                friendly_station_idx = idx
+                break
+        if friendly_station_idx is not None:
+            self.waypoints.append(EntityHandler.categorized[ObjectCategory.FRIENDLY][friendly_station_idx])
+            self.waypoints_markers.append(arcade.Sprite(texture=arcade.make_circle_texture(32, (100, 230, 230, 32))))
+            EntityHandler.add(self.waypoints_markers[-1], ObjectCategory.HUD)
 
-        print(self.waypoints_markers)
+        print("MARKERS", self.waypoints_markers)
+        print("MARKERS", self.waypoints)
 
     def notify(self, event: Event) -> None:
         if isinstance(event, SpawnEvent) and isinstance(event.spawned, Portal):

@@ -108,10 +108,10 @@ class EntityHandler(metaclass=Singleton):
         player_bucket_y: int = int(pos[1] // bs)
         for y in range(-1, 1+1):
             # if out of range skip
-            if player_bucket_y + y < 0 or player_bucket_y + y > EntityHandler.bucket_y_count: continue
+            if player_bucket_y + y < 0 or player_bucket_y + y >= EntityHandler.bucket_y_count: continue
             for x in range(-1, 1+1):
                 # if out of range skip
-                if player_bucket_x + x < 0 or player_bucket_x + x > EntityHandler.bucket_x_count: continue
+                if player_bucket_x + x < 0 or player_bucket_x + x >= EntityHandler.bucket_x_count: continue
                 # update bucket
                 EntityHandler.buckets[player_bucket_y + y][player_bucket_x + x][category].on_update(delta)
 

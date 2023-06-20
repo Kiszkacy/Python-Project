@@ -1,13 +1,11 @@
 from __future__ import annotations
 
-from time import sleep
 from typing import Tuple, Optional
 import arcade
 
 from src.game.main.entities.player_ship import PlayerShip
 from src.game.main.entities.formations.minable_asteroid import MinableAsteroid
 from src.game.main.entities.formations.player_ship import PlayerSpawn
-from src.game.main.enums.input_mode import InputMode
 from src.game.main.enums.object_category import ObjectCategory
 from src.game.main.events.spawn_event import SpawnEvent
 from src.game.main.gui.ingame.hud import HUD
@@ -20,7 +18,7 @@ from src.game.main.sectors.sector import Sector
 from src.game.main.gui.views.pause import Pause
 from src.game.main.singletons.entity_handler import EntityHandler
 from src.game.main.singletons.event_register import EventRegister
-from src.game.main.singletons.game_save import GameSave
+from src.game.main.save.game_save import GameSave
 from src.game.main.singletons.input_handler import InputHandler
 from src.game.main.particles.particles_handler import ParticlesHandler
 from src.game.main.singletons.player_statistics import PlayerStatistics
@@ -57,16 +55,9 @@ class GameView(View):
             # particle handler init
             self.particle_handler = ParticlesHandler(self.window.ctx, self.camera)
             self.particle_handler.setup()
-            # debug setup
-            # Console.init()
-            # DebugCritical.init()
+            # save setup
             PlayerStatistics.init()
-            arcade.enable_timings(120) # TMP enable fps timings
-            # initializing is only necessary if we check for collisions before drawing anything
-            GameSave.innit()
-            # generating sector map
-            # self.sector_master: SectorMaster = SectorMaster()
-            # self.sector_master.initialize()
+            GameSave.init()
 
             # player ship
             player_spawn: PlayerSpawn = PlayerSpawn()
@@ -98,7 +89,7 @@ class GameView(View):
             # spawn player
             pos: Optional[arcade.Point] = None
             while pos is None:
-                pos = self.sector.find_empty_space(player_spawn.width, player_spawn.height, 1000, offset=(5000, 5000, 5000, 5000)) # TODO constant
+                pos = self.sector.find_empty_space(player_spawn.width, player_spawn.height, 1000, offset=(3000, 3000, 3000, 3000)) # TODO constant
             player_spawn.place(pos, ObjectCategory.PLAYER, bucketable=True)
             self.player_ship = player_spawn.entities[0][0]
             EntityHandler.player = self.player_ship
@@ -218,10 +209,10 @@ class GameView(View):
         # draw particles
         self.particle_handler.draw()
         # draw sprites
+        EntityHandler.draw(ObjectCategory.FRIENDLY)
         EntityHandler.draw(ObjectCategory.ITEMS)
         EntityHandler.draw(ObjectCategory.PROJECTILES)
         EntityHandler.draw(ObjectCategory.STATIC)
-        EntityHandler.draw(ObjectCategory.FRIENDLY)
         EntityHandler.draw(ObjectCategory.NEUTRAL)
         EntityHandler.draw(ObjectCategory.ENEMIES)
         EntityHandler.draw(ObjectCategory.PLAYER)

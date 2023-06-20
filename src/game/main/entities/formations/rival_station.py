@@ -4,7 +4,6 @@ import arcade
 
 from src.game.main.entities.enemies.station.shield_beacon import EnemyStationBeacon, EnemyStationShieldBeacon
 from src.game.main.entities.enemies.station.station import EnemyStation
-from src.game.main.entities.enemies.station.turret_beacon import EnemyStationTurretBeacon
 from src.game.main.entities.entity import Entity
 from src.game.main.entities.formations.formation import Formation
 from src.game.main.util.rand import randrange

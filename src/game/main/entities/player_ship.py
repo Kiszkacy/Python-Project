@@ -10,6 +10,7 @@ from src.game.main.inventory.inventory import Inventory
 from src.game.main.inventory.ship_storage import ShipStorage
 from src.game.main.singletons.config import Config
 from src.game.main.singletons.entity_handler import EntityHandler
+from src.game.main.singletons.event_register import EventRegister
 from src.game.main.singletons.input_handler import InputHandler
 from src.game.main.util.math import map_range, clamp
 from src.game.main.util.path_loader import get_absolute_resource_path
@@ -27,8 +28,8 @@ class PlayerShip(Ship):
     def __init__(self) -> None:
         super().__init__(sprite_url=get_absolute_resource_path("\\sprites\\ships\\big_001.png"),
                          mass=50.0,
-                         weapons=[WeaponFlamethrower(), WeaponShotgun(), WeaponSniper(), WeaponSinus(), WeaponWeird()],
-                         weapon_count=5,
+                         weapons=[WeaponFlamethrower()],
+                         weapon_count=1,
                          belongs_to=ObjectCategory.PLAYER,
                          collides_with=[ObjectCategory.STATIC, ObjectCategory.ENEMIES, ObjectCategory.PROJECTILES, ObjectCategory.NEUTRAL])
         self.dashes_max: int = Config.Constants.get("DASHES_MAX")
@@ -52,7 +53,8 @@ class PlayerShip(Ship):
         self.storage.position = self.position
 
     def process_input(self, delta: float) -> None:
-        if InputHandler.mode is not InputMode.INGAME: return
+        if InputHandler.mode is not InputMode.INGAME:
+            return
 
         if InputHandler.key_binding_held("SHOOT"): # TODO switch to mouse
             self.fire()
@@ -79,6 +81,9 @@ class PlayerShip(Ship):
             self.storage.drop_all_items()
         if InputHandler.key_binding_pressed("EJECT_TRASH"):
             self.storage.drop_trash()
+        if InputHandler.key_binding_pressed("INTERACT"):
+            from src.game.main.events.interact_event import InteractEvent
+            EventRegister.register_new(InteractEvent(self, self.position))
 
     def fly(self, delta: float) -> None:
         direction: arcade.Vector = (np.cos(np.deg2rad(self.angle)), np.sin(np.deg2rad(self.angle))) # already normalized

@@ -9,7 +9,9 @@ import noise
 import seaborn as sns
 from matplotlib import pyplot as plt
 
+from src.game.main.entities.formations.formation import Formation
 from src.game.main.entities.formations.rival_station import RivalStation
+from src.game.main.entities.formations.trade_station import TradeStation
 from src.game.main.enums.object_category import ObjectCategory
 from src.game.main.quests.quest import Quest
 from src.game.main.quests.quest_mapping import QuestConstructor, MainQuests, SideQuests
@@ -108,22 +110,30 @@ class Sector:
         plt.show()
 
     def generate_formations(self) -> None:
-        if one_in(2): pass # generate friendly trading station
-        # generate item trade station
+        if one_in(2): # generate friendly trading station
+            formation: Formation = TradeStation()
+            pos: Optional[arcade.Point] = None
+            # loops until valid position is found
+            while pos is None:
+                pos = self.find_empty_space(formation.width, formation.height, max_tries=1000,
+                                            offset=(formation.width, formation.height, formation.width, formation.height))
+            formation.place(pos, ObjectCategory.FRIENDLY, True)
+            print("WEAPON STATION", pos)
+
         # generate enemy station if quest needs it
         if self.main_quest.type_ == QuestType.DESTROY_STATION:
-            formation: RivalStation = RivalStation()
+            formation: Formation = RivalStation()
             pos: Optional[arcade.Point] = None
             # loops until valid position is found
             while pos is None:
                 pos = self.find_empty_space(formation.width, formation.height, max_tries=1000,
                                             offset=(formation.width, formation.height, formation.width, formation.height))
             formation.place(pos, ObjectCategory.ENEMIES, True)
-            print(pos)
+            print("STATION", pos)
 
 
     def find_empty_space(self, width: int, height: int, max_tries: int = 20, offset: Optional[Tuple[int, int, int, int]] = None,
-                         categories: List[ObjectCategory] = (ObjectCategory.ENEMIES, ObjectCategory.STATIC, ObjectCategory.PLAYER, ObjectCategory.NEUTRAL)) -> Optional[arcade.Point]:
+                         categories: List[ObjectCategory] = (ObjectCategory.ENEMIES, ObjectCategory.STATIC, ObjectCategory.PLAYER, ObjectCategory.NEUTRAL, ObjectCategory.FRIENDLY)) -> Optional[arcade.Point]:
         """
         Finds empty space on the map
         :param width: Width of the searched area

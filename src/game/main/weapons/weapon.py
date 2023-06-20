@@ -11,6 +11,7 @@ class Weapon(Processable):
     def __init__(self, main_gun: Gun, alt_gun: Optional[Gun] = None) -> None:
         self.main_gun: Gun = main_gun
         self.alt_gun: Optional[Gun] = alt_gun
+        self.name: str = self.__class__.__name__
 
     def process(self, delta: float) -> None:
         self.main_gun.process(delta)
