@@ -32,25 +32,42 @@ class Settings(FadingView):
         title = gui.UILabel(text="SETTINGS", text_color=arcade.color.BLACK, font_size=30)
         self.layout.add(title)
 
-        box_wrapper = gui.UIBoxLayout(vertical=False, space_between=20)
-        left_box = gui.UIBoxLayout(space_between=10, align="left")
-        right_box = gui.UIBoxLayout(space_between=10, align="right")
+        button_padding = 10
+
+        box_wrapper = gui.UIBoxLayout(vertical=False, space_between=30)
+        left_box = gui.UIBoxLayout(space_between=10, vertical=False)
+        right_box = gui.UIBoxLayout(space_between=10, vertical=False)
+        left_names = gui.UIBoxLayout(space_between=10 + button_padding)
+        left_buttons = gui.UIBoxLayout(space_between=10)
+        right_names = gui.UIBoxLayout(space_between=10 + button_padding)
+        right_buttons = gui.UIBoxLayout(space_between=10)
 
         self.layout.add(box_wrapper)
         box_wrapper.add(left_box)
         box_wrapper.add(right_box)
+        left_box.add(left_names)
+        left_box.add(left_buttons)
+        right_box.add(right_names)
+        right_box.add(right_buttons)
+        text_formatting = lambda x: x.replace("_", " ")
 
         # create buttons
-        for key in Config.Keybindings.keys():
-            box = gui.UIBoxLayout(vertical=False, space_between=200)
-            left_box.add(gui.UILabel(text=key, text_color=arcade.color.BLACK, font_size=16))
+        all_options = len(Config.Keybindings.keys())
+        for i, key in enumerate(Config.Keybindings.keys()):
+            if i < all_options // 2:
+                text_container = left_names
+                buttons_container = left_buttons
+            else:
+                text_container = right_names
+                buttons_container = right_buttons
 
-            button = gui.UIFlatButton(text=Config.get_key_name(Config.Keybindings.get(key)[0]), width=200,
-                                      height=30)
-            right_box.add(button)
+            text = gui.UILabel(text=text_formatting(key), text_color=arcade.color.BLACK, font_size=16)
+            text_container.add(text)
+            button = gui.UIFlatButton(text=text_formatting(Config.get_key_name(Config.Keybindings.get(key)[0])),
+                                      width=200,
+                                      height=text.height + button_padding)
+            buttons_container.add(button)
             button.on_click = self.get_key_bidding_button_method(key, button)
-
-            # self.layout.add(box)
 
         # No saving for now
         # Exit buttons
@@ -77,7 +94,6 @@ class Settings(FadingView):
     # ==============
     # BUTTON METHODS
     # ==============
-
 
     def get_key_bidding_button_method(self, key: str, button: gui.UIFlatButton):
         def on_click(event: gui.events.UIEvent):
@@ -122,7 +138,8 @@ class Settings(FadingView):
         if self.key_binding_waiting is not None:
             for key, val in InputHandler.key_pressed.items():
                 if val:
-                    Config.change_keybindings(self.key_binding_waiting, [key, *Config.Keybindings[self.key_binding_waiting][1:]])
+                    Config.change_keybindings(self.key_binding_waiting,
+                                              [key, *Config.Keybindings[self.key_binding_waiting][1:]])
                     self.key_binding_waiting = None
                     self.button_handle.text = Config.get_key_name(key)
                     self.button_handle = None

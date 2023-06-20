@@ -3,6 +3,7 @@ from arcade import gui
 
 from src.game.main.gui.views.fading_view import FadingView
 from src.game.main.gui.views.game_view import GameView
+from src.game.main.gui.views.settings import Settings
 from src.game.main.gui.views.view import View
 from src.game.main.sectors import biomes
 from src.game.main.sectors.sector import Sector
@@ -46,7 +47,7 @@ class SectorMap(FadingView):
         self.layout.add(gui.UIAnchorWidget(child=title, anchor_y="top", align_y=-100))
         map_box = gui.UIBoxLayout(size_hint_max=350)
         self.layout.add(map_box)
-        self.sector_info_text = gui.UITextArea(text="Select sector to see information", font_size=12, width=400, height=200)
+        self.sector_info_text = gui.UITextArea(text="Select sector to see information", font_size=12, width=200, height=200)
 
         for node, coordinates in SectorMap.sector_map.items():
             button_colour = biomes.get_biome_color_theme(node.sector.type)
@@ -59,9 +60,13 @@ class SectorMap(FadingView):
         self.layout.add(vbox)
         start_button = gui.UIFlatButton(text="Start")
         start_button.on_click = self.on_click_start_button
+        settings_button = gui.UIFlatButton(text="Settings")
+        settings_button.on_click = self.on_click_settings_button
 
         vbox.add(self.sector_info_text)
+        # vbox.add(self.sector_info_text)
         vbox.add(gui.UIAnchorWidget(child=start_button, anchor_y="top", anchor_x="right"))
+        vbox.add(gui.UIAnchorWidget(child=settings_button, anchor_y="center", anchor_x="right"))
 
         # NOTE: I think this magical code automatically centers whole ui ?
         self.manager.add(
@@ -93,9 +98,12 @@ class SectorMap(FadingView):
             SectorMap.game.sector = self.inspected_sector_node.sector
             self.switch_view(SectorMap.game)
 
+    def on_click_settings_button(self, event: gui.events.UIEvent) -> None:
+        self.switch_view(Settings(self.window, self, arcade.color.GRAY))
+
     def on_show_view(self):
         """ Called when switching to this view"""
-        arcade.set_background_color(arcade.color.CHARCOAL)
+        arcade.set_background_color(arcade.color.GRAY)
 
     def on_update(self, delta_time: float) -> None:
         super(SectorMap, self).on_update(delta_time)
